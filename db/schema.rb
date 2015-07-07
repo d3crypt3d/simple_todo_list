@@ -11,16 +11,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150707164916) do
+ActiveRecord::Schema.define(version: 20150707184549) do
 
   create_table "projects", force: true do |t|
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "task_id"
   end
-
-  add_index "projects", ["task_id"], name: "index_projects_on_task_id"
 
   create_table "tasks", force: true do |t|
     t.string   "content"
@@ -29,6 +26,9 @@ ActiveRecord::Schema.define(version: 20150707164916) do
     t.boolean  "isdone"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "project_id"
   end
+
+  add_index "tasks", ["project_id"], name: "index_tasks_on_project_id"
 
 end
