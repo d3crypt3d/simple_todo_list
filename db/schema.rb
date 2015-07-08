@@ -23,7 +23,7 @@ ActiveRecord::Schema.define(version: 20150707184549) do
     t.string   "content"
     t.integer  "priority"
     t.datetime "deadline"
-    t.boolean  "isdone" 
+    t.boolean  "isdone"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "project_id"
