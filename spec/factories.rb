@@ -13,5 +13,6 @@ FactoryGirl.define do
 
     factory :comment do
         content "test comment"
+        task
     end
 end

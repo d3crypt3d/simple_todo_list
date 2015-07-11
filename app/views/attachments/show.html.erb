@@ -1,0 +1,19 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Filename:</strong>
+  <%= @attachment.filename %>
+</p>
+
+<p>
+  <strong>Mime type:</strong>
+  <%= @attachment.mime_type %>
+</p>
+
+<p>
+  <strong>Data:</strong>
+  <%= @attachment.data %>
+</p>
+
+<%= link_to 'Edit', edit_attachment_path(@attachment) %> |
+<%= link_to 'Back', attachments_path %>
