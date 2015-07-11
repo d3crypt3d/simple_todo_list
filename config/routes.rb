@@ -1,7 +1,10 @@
 Rails.application.routes.draw do
  
+
   resources :projects do
-     resources :tasks, except: [:update, :destroy]
+     resources :tasks, except: [:update, :destroy] do
+        resources :comments, except: [:update, :edit]
+     end
   end  
 
   resources :tasks, only: [:update, :destroy]

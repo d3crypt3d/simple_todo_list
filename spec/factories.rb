@@ -10,4 +10,8 @@ FactoryGirl.define do
         isdone true
         project
     end 
+
+    factory :comment do
+        content "test comment"
+    end
 end
