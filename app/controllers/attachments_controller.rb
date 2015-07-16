@@ -24,10 +24,13 @@ class AttachmentsController < ApplicationController
   # POST /attachments
   # POST /attachments.json
   def create
-    @attachment = Attachment.new(attachment_params)
-
+    #Since 4.1 Rails dont't properly process ActionDispatch::Http::UploadedFile object
+    #it's better to do this manually: create the model instance and define the custom method
+    @attachment = Attachment.new
+    @attachment.file_upload=(attachment_params.delete(:data))
     respond_to do |format|
-      if @attachment.save
+      #custom validation will also rise native validations  
+      if @attachment.save(context: :file_upload=)
         format.html { redirect_to @attachment, notice: 'Attachment was successfully created.' }
         format.json { render :show, status: :created, location: @attachment }
       else
