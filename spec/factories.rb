@@ -15,4 +15,8 @@ FactoryGirl.define do
         content "test comment"
         task
     end
+
+    factory :attachment do
+        comment
+    end
 end
