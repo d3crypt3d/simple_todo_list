@@ -32,6 +32,7 @@ describe Attachment do
         end
 
         it { expect(@attachment.valid?(:file_upload=)).to be true }
+        it { expect(@attachment.data).not_to be_nil }
 
         after do
             File.delete('dummy_file')
@@ -54,6 +55,7 @@ describe Attachment do
         end
 
         it { expect(@attachment.valid?(:file_upload=)).to be false }
+        it { expect(@attachment.data).to be_nil }
         
         after do
             File.delete('dummy_file')
