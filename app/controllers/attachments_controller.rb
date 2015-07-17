@@ -10,6 +10,11 @@ class AttachmentsController < ApplicationController
   # GET /attachments/1
   # GET /attachments/1.json
   def show
+      #Bug in Rails 4.1 - can't properly load  binary data while pg 0.18 been used
+      #base64 encding/decoding as workaround
+      send_data(Base64.decode64(@attachment.data),
+               type: @attachment.mime_type,
+               filename: @attachment.filename)
   end
 
   # GET /attachments/new
