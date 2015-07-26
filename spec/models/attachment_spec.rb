@@ -4,8 +4,6 @@ describe Attachment do
     
     before do
         @attachment = FactoryGirl.create(:attachment)
-        @file_size = 0
-        @string = "abcdefghijklmnopqrstuvwxyz123456"
     end
 
     subject { @attachment }
@@ -16,49 +14,46 @@ describe Attachment do
     it { should respond_to(:data) }
     it { should respond_to(:file_upload=) }
 
-    describe "it should be valid with a valid file size" do
+    context "it should be valid with a valid file size" do
         before do
-            File.open('dummy_file', 'w') do |f|
-                while @file_size < 5242880       # 5*2^20
-                    f.print @string
-                    @file_size += @string.size
-                end
-            end
-            upload_object = ActionDispatch::Http::UploadedFile.new(
-                                             tempfile: File.new("dummy_file"),
-                                             filename: "test.png",
-                                             type: "image/png")
-            @attachment.file_upload= upload_object
+             @attachment.file_upload= create_dummy_file(5242880)
         end
 
         it { expect(@attachment.valid?(:file_upload=)).to be true }
         it { expect(@attachment.data).not_to be_nil }
 
-        after do
-            File.delete('dummy_file')
-        end
+        after { delete_dummy_file }
     end
 
-    describe "it should not be valid with invalid file size" do
+    context "it should not be valid with invalid file size" do
         before do
-            File.open('dummy_file', 'w') do |f|
-                while @file_size < 5242881       # 5*2^20
-                    f.print @string
-                    @file_size += @string.size
-                end
-            end
-            upload_object = ActionDispatch::Http::UploadedFile.new(
-                                             tempfile: File.new("dummy_file"),
-                                             filename: "test.png",
-                                             type: "image/png")
-            @attachment.file_upload= upload_object
+            @attachment.file_upload= create_dummy_file(5242881) 
         end
 
         it { expect(@attachment.valid?(:file_upload=)).to be false }
         it { expect(@attachment.data).to be_nil }
         
-        after do
-            File.delete('dummy_file')
+        after { delete_dummy_file }
+    end
+
+    def create_dummy_file(required_size)
+        file_size = 0
+        string = "abcdefghijklmnopqrstuvwxyz123456"
+
+        File.open('dummy_file', 'w') do |f|
+            while file_size < required_size       # 5*2^20
+                f.print string
+                file_size += string.size
+            end
         end
+
+        return ActionDispatch::Http::UploadedFile.new(
+                                             tempfile: File.new("dummy_file"),
+                                             filename: "test.png",
+                                             type: "image/png")
+    end
+
+    def delete_dummy_file
+        File.delete('dummy_file')
     end
 end
