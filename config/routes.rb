@@ -1,21 +1,23 @@
 Rails.application.routes.draw do
  
-  resources :projects do
-     resources :tasks, except: [:update, :destroy] do
-        resources :comments, except: [:update, :edit] do
-            resources :attachments, except: [:update, :edit]
-        end
-     end
-  end  
+  namespace :api, path: '/', constraints: { subdomain: 'api' } do  
+      resources :projects do
+         resources :tasks, except: [:update, :destroy] do
+            resources :comments, except: [:update, :edit] do
+                resources :attachments, except: [:update, :edit]
+            end
+         end
+      end  
 
-  resources :tasks, only: [:update, :destroy]
+      resources :tasks, only: [:update, :destroy]
+  end
   #resources :attachments, only: [:new, :show, :create]
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
   # You can have the root of your site routed with "root"
-  # root 'welcome#index'
+  root 'welcome#index'
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
