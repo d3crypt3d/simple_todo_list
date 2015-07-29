@@ -5,7 +5,7 @@ module API
       # GET /projects
       # GET /projects.json
       def index
-        @projects = Project.all
+        render json: Project.all, status: 200
       end
 
       # GET /projects/1
