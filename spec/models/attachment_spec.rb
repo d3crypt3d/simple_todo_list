@@ -16,7 +16,7 @@ describe Attachment do
 
     context "it should be valid with a valid file size" do
         before do
-             @attachment.file_upload= create_dummy_file(5242880)
+             @attachment.file_upload= create_dummy_file(5242880)        # 5*2^20
         end
 
         it { expect(@attachment.valid?(:file_upload=)).to be true }
@@ -41,7 +41,7 @@ describe Attachment do
         string = "abcdefghijklmnopqrstuvwxyz123456"
 
         File.open('dummy_file', 'w') do |f|
-            while file_size < required_size       # 5*2^20
+            while file_size < required_size
                 f.print string
                 file_size += string.size
             end

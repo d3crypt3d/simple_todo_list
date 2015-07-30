@@ -10,7 +10,7 @@ describe Comment do
     it { should be_valid }      #valid with valid attributes
     it { should respond_to(:content) }
 
-    describe "when content is not present" do
+    context "when content is not present" do
         before { @comment.content = " " }
         it { should_not be_valid }
     end

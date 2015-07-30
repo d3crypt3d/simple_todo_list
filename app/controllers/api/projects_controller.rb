@@ -11,6 +11,7 @@ module API
       # GET /projects/1
       # GET /projects/1.json
       def show
+          render json: Project.find(params[:id]), status: 200
       end
 
       # GET /projects/new
