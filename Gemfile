@@ -37,7 +37,7 @@ group :test do
       gem 'rspec-expectations', '~> 3.0.0'
       gem 'capybara', '~> 2.3.0'
       gem 'factory_girl_rails'
-      gem 'faker'
+      gem 'ffaker'
 end
 
 gem 'active_model_serializers'

@@ -1,18 +1,18 @@
 FactoryGirl.define do
     factory :project do
-        name Faker::Lorem.word
+        name { FFaker::Lorem.word }
     end
 
     factory :task do
-        content Faker::Lorem.sentence
-        priority Faker::Number.between(1, 10) 
-        deadline Faker::Time.forward(7, :all)
-        isdone Faker::Number.between(0, 1) == 1  #type coercion is different 0 is not false
+        content { FFaker::Lorem.sentence }
+        priority { FFaker::Number.between(1, 10) } 
+        deadline { FFaker::Time.forward(7, :all) }
+        isdone { FFaker::Number.between(0, 1) == 1 } #type coercion is different: 0 is not false
         project
     end 
 
     factory :comment do
-        content Faker::Lorem.sentence
+        content { FFaker::Lorem.sentence }
         task
     end
 
