@@ -5,6 +5,7 @@ module API
       # GET /projects
       # GET /projects.json
       def index
+        #render json: Project.where(archived: false), status: 200
         render json: Project.all, status: 200
       end
 
@@ -26,41 +27,33 @@ module API
       # POST /projects
       # POST /projects.json
       def create
-        @project = Project.new(project_params)
+          project = Project.new(project_params)
 
-        respond_to do |format|
-          if @project.save
-            format.html { redirect_to @project, notice: 'Project was successfully created.' }
-            format.json { render :show, status: :created, location: @project }
+          if project.save
+            render json: project, status: :created, location: [:api, project]
           else
-            format.html { render :new }
-            format.json { render json: @project.errors, status: :unprocessable_entity }
+            render json: project.errors, status: :unprocessable_entity
           end
-        end
+
       end
 
       # PATCH/PUT /projects/1
       # PATCH/PUT /projects/1.json
       def update
-        respond_to do |format|
           if @project.update(project_params)
-            format.html { redirect_to @project, notice: 'Project was successfully updated.' }
-            format.json { render :show, status: :ok, location: @project }
+            render json: @project, status: :ok, location: [:api, @project] 
           else
-            format.html { render :edit }
-            format.json { render json: @project.errors, status: :unprocessable_entity }
+            render json: @project.errors, status: :unprocessable_entity
           end
-        end
       end
 
       # DELETE /projects/1
       # DELETE /projects/1.json
       def destroy
-        @project.destroy
-        respond_to do |format|
-          format.html { redirect_to projects_url, notice: 'Project was successfully destroyed.' }
-          format.json { head :no_content }
-        end
+            #@project.find_unarchived(params[:id])
+            #@project.archive
+            @project.delete
+            head :no_content
       end
 
       private
