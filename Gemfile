@@ -26,7 +26,8 @@ gem 'sdoc', '~> 0.4.0',          group: :doc
 # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
 gem 'spring',        group: :development
 
-group :test do
+group :test, :development do
+      gem 'rspec-expectations', '~> 3.0.0'
       gem 'spring-commands-rspec'
       #gem 'guard-rspec', require: false
       gem 'rspec-rails', '~> 3.0.0'
@@ -34,7 +35,6 @@ group :test do
       gem 'rspec-its', '~> 1.0.1'
       # Support for stubbing model in view specs
       gem 'rspec-activemodel-mocks', '~> 1.0.1'
-      gem 'rspec-expectations', '~> 3.0.0'
       gem 'capybara', '~> 2.3.0'
       gem 'factory_girl_rails'
       gem 'ffaker'

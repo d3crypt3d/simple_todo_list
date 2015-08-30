@@ -18,6 +18,12 @@ Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
 ActiveRecord::Migration.maintain_test_schema!
 
 RSpec.configure do |config|
+
+    config.before do
+        #host! "api.simple-todo-list.net"
+        Rails.application.routes.default_url_options[:host] = "api.simple-todo-list.net"
+    end
+
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   #config.fixture_path = "#{::Rails.root}/spec/fixtures"
 
@@ -41,4 +47,5 @@ RSpec.configure do |config|
   # https://relishapp.com/rspec/rspec-rails/docs
   config.infer_spec_type_from_file_location!
   config.include Helpers
+  config.include ControllerHelpers
 end

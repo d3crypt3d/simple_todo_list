@@ -1,6 +1,10 @@
 FactoryGirl.define do
     factory :project do
         name { FFaker::Lorem.word }
+
+        factory :invalid_project do
+            name nil
+        end
     end
 
     factory :task do

@@ -1,27 +1,19 @@
 module API
     class ProjectsController < ApplicationController
-      before_action :set_project, only: [:show, :edit, :update, :destroy]
+      before_action :set_project, only: [:show, :update, :destroy]
+      before_action :manually_validate_format, only: [:create, :update, :destroy]
+      respond_to :json
 
       # GET /projects
       # GET /projects.json
       def index
-        #render json: Project.where(archived: false), status: 200
-        render json: Project.all, status: 200
+        respond_with Project.all
       end
 
       # GET /projects/1
       # GET /projects/1.json
       def show
-          render json: Project.find(params[:id]), status: 200
-      end
-
-      # GET /projects/new
-      def new
-        @project = Project.new
-      end
-
-      # GET /projects/1/edit
-      def edit
+          respond_with @project
       end
 
       # POST /projects
@@ -30,18 +22,19 @@ module API
           project = Project.new(project_params)
 
           if project.save
-            render json: project, status: :created, location: [:api, project]
+            # in this case json object can be returned without setting json: property, strange
+            respond_with project, location: [:api, project]                 
           else
             render json: project.errors, status: :unprocessable_entity
           end
-
       end
 
       # PATCH/PUT /projects/1
       # PATCH/PUT /projects/1.json
       def update
           if @project.update(project_params)
-            render json: @project, status: :ok, location: [:api, @project] 
+            # without json: property has been set no content will be generated
+            respond_with @project, json: @project, location: [:api, @project] 
           else
             render json: @project.errors, status: :unprocessable_entity
           end
@@ -50,21 +43,24 @@ module API
       # DELETE /projects/1
       # DELETE /projects/1.json
       def destroy
-            #@project.find_unarchived(params[:id])
-            #@project.archive
             @project.delete
-            head :no_content
+            respond_with(:no_content)
       end
 
       private
         # Use callbacks to share common setup or constraints between actions.
         def set_project
-          @project = Project.find(params[:id])
+            id = params[:id]
+            @project = Project.find(id)
+
+            rescue ActiveRecord::RecordNotFound
+                render json: {errors: "Couldn't find the Project with id=#{id}"},
+                              status: :not_found
         end
 
         # Never trust parameters from the scary internet, only allow the white list through.
         def project_params
-          params.require(:project).permit(:name)
+            params.require(:project).permit(:name,:id)
         end
     end
 end
