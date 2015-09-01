@@ -1,65 +1,49 @@
 module API
     class TasksController < ApplicationController
-      before_action :set_task, only: [:show, :edit, :update, :destroy]
+      before_action :set_task, except: [:index, :create]
+      before_action :find_project, only: [:index, :create]
+      respond_to :json
 
       # GET /tasks
       # GET /tasks.json
       def index
-        @tasks = Task.all
+        respond_with @project.tasks
       end
 
       # GET /tasks/1
       # GET /tasks/1.json
       def show
-      end
-
-      # GET /tasks/new
-      def new
-        @task = Task.new
-      end
-
-      # GET /tasks/1/edit
-      def edit
+        respond_with @task
       end
 
       # POST /tasks
       # POST /tasks.json
       def create
-        @task = Task.new(task_params)
+        task = @project.tasks.new(task_params)
 
-        respond_to do |format|
-          if @task.save
-            format.html { redirect_to @task, notice: 'Task was successfully created.' }
-            format.json { render :show, status: :created, location: @task }
-          else
-            format.html { render :new }
-            format.json { render json: @task.errors, status: :unprocessable_entity }
-          end
+        if task.save
+            respond_with task, location: [:api, task]                 
+        else
+            render json: task.errors, status: :unprocessable_entity
         end
       end
 
       # PATCH/PUT /tasks/1
       # PATCH/PUT /tasks/1.json
       def update
-        respond_to do |format|
           if @task.update(task_params)
-            format.html { redirect_to @task, notice: 'Task was successfully updated.' }
-            format.json { render :show, status: :ok, location: @task }
+            # without json: property has been set no content will be generated
+            respond_with @task, json: @task, location: [:api, @task] 
           else
-            format.html { render :edit }
-            format.json { render json: @task.errors, status: :unprocessable_entity }
+            render json: @task.errors, status: :unprocessable_entity
           end
-        end
       end
 
       # DELETE /tasks/1
       # DELETE /tasks/1.json
       def destroy
         @task.destroy
-        respond_to do |format|
-          format.html { redirect_to tasks_url, notice: 'Task was successfully destroyed.' }
-          format.json { head :no_content }
-        end
+        respond_with(:no_content)
       end
 
       private
@@ -68,9 +52,13 @@ module API
           @task = Task.find(params[:id])
         end
 
+        def find_project
+            @project = Project.find(params[:project_id])
+        end
+
         # Never trust parameters from the scary internet, only allow the white list through.
         def task_params
-          params.require(:task).permit(:content, :priority, :deadline, :isdone)
+          params.require(:task).permit(:id, :content, :priority, :deadline, :isdone)
         end
     end
 end

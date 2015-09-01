@@ -1,15 +1,20 @@
 Rails.application.routes.draw do
  
   namespace :api, path: '/', constraints: { subdomain: 'api' } do  
-      resources :projects do
-         resources :tasks, except: [:update, :destroy] do
-            resources :comments, except: [:update, :edit] do
-                resources :attachments, except: [:update, :edit]
-            end
-         end
-      end  
-
-      resources :tasks, only: [:update, :destroy]
+      with_options except: [:new, :edit], shallow: true do |without_views|
+          without_views.resources :projects do
+             without_views.resources :tasks do
+                # just adding a new value to the same option will cause the clobbing; 
+                # the second value will override the first on when calling Hash#merge
+                # the only way is setting the old value in a pair with the new one
+                without_views.with_options except: [:new, :edit, :update] do |without_update|
+                    without_update.resources :comments do
+                        without_update.resources :attachments
+                    end
+                end
+             end
+          end  
+      end
   end
   #resources :attachments, only: [:new, :show, :create]
 

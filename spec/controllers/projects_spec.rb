@@ -16,7 +16,7 @@ RSpec.describe API::ProjectsController do
            it { expect(project_list).to match_array(Project.first(2)) }
         end 
 
-        context "when requested wrong content" do
+        context "when requested a wrong content" do
            before { make_request :get, :index, Mime::XML }
            it { is_expected.to have_http_status(406).and have_content_type(:json) }
         end
@@ -33,13 +33,13 @@ RSpec.describe API::ProjectsController do
             it { is_expected.to have_http_status(:ok).and have_content_type(:json) }
         end
 
-        context "when resource is not found" do
+        context "when a resource is not found" do
             before { make_request :get, :show, {id: proj.id + 1} }
 
             it { is_expected.to have_http_status(404).and have_content_type(:json) } 
         end
 
-        context "when requested wrong content" do
+        context "when requested a wrong content" do
              before { make_request :get, :show, Mime::XML, {id: proj} } 
 
              it { is_expected.to have_http_status(406).and have_content_type(:json) }
@@ -68,7 +68,7 @@ RSpec.describe API::ProjectsController do
             it { is_expected.to have_http_status(422).and have_content_type(:json) }
         end
         
-        context "when requested wrong content" do
+        context "when requested a wrong content" do
            before do
               @count = Project.count 
               make_request :post, :create, Mime::XML,
@@ -116,7 +116,7 @@ RSpec.describe API::ProjectsController do
             it { is_expected.to have_http_status(422).and have_content_type(:json) }
         end
 
-        context "when requested wrong content", method_test: :true do
+        context "when requested a wrong content" do
             before do
                 make_request :patch, :update, Mime::XML,
                     {id: proj, project: {name: 'another_name'}}
@@ -133,24 +133,22 @@ RSpec.describe API::ProjectsController do
 
         subject { response }
 
-        context "with valid attributes" do
+        context "with valid id" do
 
             before { make_request :delete, :destroy, {id: proj} }
 
-            it { is_expected.to have_http_status(204).and have_content_type(:json) }
+            it { is_expected.to have_http_status(204) }
             it { expect(Project.exists? proj).to be_falsey }
         end
 
-        context "when resourse is not found" do
-            #let(:proj) { create(:project) }
+        context "when a resourse is not found" do
 
             before { make_request :delete, :destroy, {id: proj.id + 1} }
 
             it { is_expected.to have_http_status(404).and have_content_type(:json) }
         end
 
-        context "when requested wrong content" do
-            #let(:proj) { create(:project) }
+        context "when requested a wrong content" do
 
             before { make_request :delete, :destroy, Mime::XML, {id: proj} }
 
@@ -159,34 +157,4 @@ RSpec.describe API::ProjectsController do
             it { expect(Project.exists? proj).to be_truthy }
         end
     end
-    
-    #get api_projects_path(format: :json) also results in a proper
-    #response, however, the following one is more semantically correct
-    #(according to RFC 2616).
-    def make_json_get_request(path)
-        get path, nil, { Accept: 'application/json' }
-    end
-
-    def make_xml_get_request(path)
-        get path, nil, { Accept: 'application/xml' }
-    end
-
-    def make_json_post_request(name = "")
-        post '/projects', 
-             { project: {name: name} }.to_json,
-             { 'Accept' => 'application/json',
-               'Content-Type' => 'application/json' } 
-    end
-
-    def make_xml_post_request(name = "")
-        post '/projects',
-             { project: {name: name} }.to_json,
-             { 'Accept' => 'application/xml',
-               'Content-Type' => 'application/json' } 
-    end
-    
-    def make_json_delete_request(path)
-        delete path, nil, { Accept: 'application/json' }
-    end
-
 end
