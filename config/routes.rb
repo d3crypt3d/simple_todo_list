@@ -4,8 +4,8 @@ Rails.application.routes.draw do
       with_options except: [:new, :edit], shallow: true do |without_views|
           without_views.resources :projects do
              without_views.resources :tasks do
-                # just adding a new value to the same option will cause the clobbing; 
-                # the second value will override the first on when calling Hash#merge
+                # just adding a new value to the same option will cause the clobbing: 
+                # the second value will override the first one when calling Hash#merge;
                 # the only way is setting the old value in a pair with the new one
                 without_views.with_options except: [:new, :edit, :update] do |without_update|
                     without_update.resources :comments do
@@ -16,7 +16,6 @@ Rails.application.routes.draw do
           end  
       end
   end
-  #resources :attachments, only: [:new, :show, :create]
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

@@ -49,7 +49,13 @@ module API
       private
         # Use callbacks to share common setup or constraints between actions.
         def set_task
-          @task = Task.find(params[:id])
+          id = params[:id] 
+          @task = Task.find(id)
+
+          rescue ActiveRecord::RecordNotFound
+                render json: {errors: "Couldn't find the Task with id=#{id}"},
+                              status: :not_found
+
         end
 
         def find_project

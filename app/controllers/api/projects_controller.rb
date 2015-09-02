@@ -1,7 +1,6 @@
 module API
     class ProjectsController < ApplicationController
       before_action :set_project, only: [:show, :update, :destroy]
-      before_action :manually_validate_format, only: [:create, :update, :destroy]
       respond_to :json
 
       # GET /projects

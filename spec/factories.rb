@@ -5,14 +5,28 @@ FactoryGirl.define do
         factory :invalid_project do
             name nil
         end
+
+        factory :project_with_tasks do
+            transient do
+                task_count 2
+            end
+
+            after(:create) do |project, evaluator|
+                create_list(:task, evaluator.task_count, project: project)
+            end
+        end
     end
 
     factory :task do
         content { FFaker::Lorem.sentence }
-        priority { FFaker::Number.between(1, 10) } 
-        deadline { FFaker::Time.forward(7, :all) }
-        isdone { FFaker::Number.between(0, 1) == 1 } #type coercion is different: 0 is not false
+        sequence(:priority) { |n| n } # no need to generate random numbers
+        deadline { FFaker::Time.date }
+        isdone { FFaker::Boolean.maybe } 
         project
+
+        factory :invalid_task do
+            content nil
+        end
     end 
 
     factory :comment do
