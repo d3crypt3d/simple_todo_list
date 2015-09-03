@@ -1,54 +1,43 @@
 module API
     class CommentsController < ApplicationController
-      before_action :set_comment, only: [:show, :edit, :update, :destroy]
+      before_action :set_comment, except: [:index, :create]
+      before_action :find_task, only: [:index, :create]
+      # following hook will prevent an action from been called if having been moved
+      # to application.rb (why?); hence assigns(:symbol) will throw an error when 
+      # wrong content is requested, because correspnding instance variable will not be set
+      before_action :manually_validate_format, only: [:create, :update, :destroy]
+      respond_to :json
 
       # GET /comments
       # GET /comments.json
       def index
-        @comments = Comment.all
-      end
-
-      # GET /comments/1
-      # GET /comments/1.json
-      def show
+        respond_with @task.comments
       end
 
       # GET /comments/new
-      def new
-        @comment = Comment.new
-      end
-
-      # GET /comments/1/edit
-      def edit
+      def show
+        respond_with @comment
       end
 
       # POST /comments
       # POST /comments.json
       def create
-        @comment = Comment.new(comment_params)
+        comment = @task.comments.new(comment_params)
 
-        respond_to do |format|
-          if @comment.save
-            format.html { redirect_to @comment, notice: 'Comment was successfully created.' }
-            format.json { render :show, status: :created, location: @comment }
-          else
-            format.html { render :new }
-            format.json { render json: @comment.errors, status: :unprocessable_entity }
-          end
+        if comment.save
+          respond_with comment, location: [:api, comment] 
+        else
+          render json: comment.errors, status: :unprocessable_entity 
         end
       end
 
       # PATCH/PUT /comments/1
       # PATCH/PUT /comments/1.json
       def update
-        respond_to do |format|
-          if @comment.update(comment_params)
-            format.html { redirect_to @comment, notice: 'Comment was successfully updated.' }
-            format.json { render :show, status: :ok, location: @comment }
-          else
-            format.html { render :edit }
-            format.json { render json: @comment.errors, status: :unprocessable_entity }
-          end
+        if @comment.update(comment_params)
+          respond_with @comment, json: @comment, location: [:api, @comment] 
+        else
+          render json: @comment.errors, status: :unprocessable_entity
         end
       end
 
@@ -56,10 +45,7 @@ module API
       # DELETE /comments/1.json
       def destroy
         @comment.destroy
-        respond_to do |format|
-          format.html { redirect_to comments_url, notice: 'Comment was successfully destroyed.' }
-          format.json { head :no_content }
-        end
+        respond_with(:no_content)
       end
 
       private
@@ -68,9 +54,13 @@ module API
           @comment = Comment.find(params[:id])
         end
 
+        def find_task
+          @task = Task.find(params[:task_id])
+        end
+
         # Never trust parameters from the scary internet, only allow the white list through.
         def comment_params
-          params.require(:comment).permit(:content)
+          params.require(:comment).permit(:id, :content)
         end
     end
 end

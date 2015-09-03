@@ -3,7 +3,6 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
   rescue_from ActionController::UnknownFormat, with: :unacceptable
-  before_action :manually_validate_format, only: [:create, :update, :destroy]
 
     def unacceptable
         render json: {errors: "Unsupported format is requested"}, status: :not_acceptable 

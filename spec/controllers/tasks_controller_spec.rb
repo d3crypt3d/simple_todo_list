@@ -105,14 +105,14 @@ RSpec.describe API::TasksController do
             it { is_expected.to have_http_status(422).and have_content_type(:json) }
         end
         
-        context 'when a wrong format is requested',test: true do
+        context 'when a wrong format is requested' do
             before do
                 make_request :patch, :update, Mime::XML,
                     {id: project_task, task: {content: 'dont_update_me'}}
             end
 
             it { is_expected.to have_http_status(406).and have_content_type(:json) }
-            #it { expect(assigns(:task).content).not_to eq('dont_update_me') }
+            it { expect(assigns(:task).content).not_to eq('dont_update_me') }
         end
     end
     
