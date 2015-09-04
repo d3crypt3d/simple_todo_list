@@ -51,7 +51,12 @@ module API
       private
         # Use callbacks to share common setup or constraints between actions.
         def set_comment
-          @comment = Comment.find(params[:id])
+          id = params[:id]  
+          @comment = Comment.find(id)
+        
+          rescue ActiveRecord::RecordNotFound
+                render json: {errors: "Couldn't find the Comment with id=#{id}"},
+                              status: :not_found
         end
 
         def find_task

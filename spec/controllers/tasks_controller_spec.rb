@@ -7,14 +7,14 @@ RSpec.describe API::TasksController do
         subject { response }
 
         context 'common case' do
-            before { make_request :get, :index, {project_id: project_task_list.id} }
+            before { make_request :get, :index, {project_id: project_task_list} }
 
             it { is_expected.to have_http_status(:ok).and have_content_type(:json) }
             it { expect(project_task_list.tasks).to match_array(Task.first(2)) }
         end
 
         context 'when a wrong format is requested' do
-            before { make_request :get, :index, Mime::XML, {project_id: project_task_list.id} }
+            before { make_request :get, :index, Mime::XML, {project_id: project_task_list} }
 
             it { is_expected.to have_http_status(406).and have_content_type(:json) }
         end
