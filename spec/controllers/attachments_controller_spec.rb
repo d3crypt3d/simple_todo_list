@@ -55,9 +55,9 @@ RSpec.describe API::AttachmentsController do
 
         context 'with valid attributes' do
             before do
-               make_request :post, :create, content: 'multipart/form-data',
-                                    comment_id: attach.comment_id, 
-                                        attachment: {data: create_dummy_file(524288)}  
+               make_request :post, :create, comment_id: attach.comment_id, 
+                                    attachment: {data: create_dummy_file(524288)},
+                                     content: 'multipart/form-data'  
             end
 
             it { is_expected.to have_http_status(201).and have_content_type(:json) }
@@ -65,9 +65,9 @@ RSpec.describe API::AttachmentsController do
 
         context 'with invalid size' do
             before do
-                make_request :post, :create, content: 'multipart/form-data',
-                                    comment_id: attach.comment_id, 
-                                        attachment: {data: create_dummy_file(5242881)}  
+                make_request :post, :create, comment_id: attach.comment_id, 
+                                     attachment: {data: create_dummy_file(5242881)},
+                                      content: 'multipart/form-data'  
             end
 
             it { is_expected.to have_http_status(422).and have_content_type(:json) }
@@ -76,10 +76,10 @@ RSpec.describe API::AttachmentsController do
         context 'when a wrong format is requested' do
             before do
                 @count = Attachment.count
-                make_request :post, :create, content: 'multipart/form-data',
-                                     comment_id: attach.comment_id, 
-                                        attachment: {data: create_dummy_file(5242881)},
-                                            accept: Mime::XML 
+                make_request :post, :create, comment_id: attach.comment_id, 
+                                     attachment: {data: create_dummy_file(5242881)},
+                                      accept: Mime::XML,
+                                       content: 'multipart/form-data'
             end
 
             it { is_expected.to have_http_status(406).and have_content_type(:json) }
