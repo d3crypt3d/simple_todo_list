@@ -46,5 +46,14 @@ FactoryGirl.define do
 
     factory :attachment do
         comment
+        # after(:build) hook will be helpful in both strategies: build and create
+        factory :attachment_valid_size do
+            # no need to create a file with a maximum valid size, as it will slow our
+            # tests; (2^20)/2 - 512Kb would be pretty enough
+            after(:build) { |attach| attach.file_upload= create_dummy_file(524288) } 
+        end
+        factory :attachment_invalid_size do
+            after(:build) { |attach| attach.file_upload= create_dummy_file(5242881) } # 5*2^20+1
+        end
     end
 end

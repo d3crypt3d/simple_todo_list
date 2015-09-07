@@ -25,7 +25,7 @@ RSpec.configure do |config|
     end
 
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
-  #config.fixture_path = "#{::Rails.root}/spec/fixtures"
+  # config.fixture_path = "#{::Rails.root}/spec/fixtures"
 
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
   # examples within a transaction, remove the following line or assign false
@@ -48,4 +48,7 @@ RSpec.configure do |config|
   config.infer_spec_type_from_file_location!
   config.include Helpers
   config.include ControllerHelpers
+  # while factories load dummy files into the attachment resource
+  # we still need an ability to create the file separately
+  config.include FactoryHelpers
 end

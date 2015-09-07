@@ -35,25 +35,4 @@ describe Attachment do
         
         after { delete_dummy_file }
     end
-
-    def create_dummy_file(required_size)
-        file_size = 0
-        string = "abcdefghijklmnopqrstuvwxyz123456"
-
-        File.open('dummy_file', 'w') do |f|
-            while file_size < required_size
-                f.print string
-                file_size += string.size
-            end
-        end
-
-        return ActionDispatch::Http::UploadedFile.new(
-                                             tempfile: File.new("dummy_file"),
-                                             filename: "test.png",
-                                             type: "image/png")
-    end
-
-    def delete_dummy_file
-        File.delete('dummy_file')
-    end
 end
