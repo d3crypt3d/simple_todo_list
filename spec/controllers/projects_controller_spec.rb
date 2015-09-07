@@ -17,7 +17,7 @@ RSpec.describe API::ProjectsController do
         end 
 
         context "when requested a wrong content" do
-           before { make_request :get, :index, Mime::XML }
+           before { make_request :get, :index, accept: Mime::XML }
            it { is_expected.to have_http_status(406).and have_content_type(:json) }
         end
     end
@@ -28,19 +28,19 @@ RSpec.describe API::ProjectsController do
         subject { response }
 
         context "common case" do
-            before { make_request :get, :show, {id: proj} } 
+            before { make_request :get, :show, id: proj } 
 
             it { is_expected.to have_http_status(:ok).and have_content_type(:json) }
         end
 
         context "when a resource is not found" do
-            before { make_request :get, :show, {id: proj.id + 1} }
+            before { make_request :get, :show, id: proj.id + 1 }
 
             it { is_expected.to have_http_status(404).and have_content_type(:json) } 
         end
 
         context "when requested a wrong content" do
-             before { make_request :get, :show, Mime::XML, {id: proj} } 
+             before { make_request :get, :show, id: proj, accept: Mime::XML } 
 
              it { is_expected.to have_http_status(406).and have_content_type(:json) }
         end
@@ -53,7 +53,7 @@ RSpec.describe API::ProjectsController do
         context "with valid attributes" do
             before do
                 make_request :post, :create,
-                    {project: attributes_for(:project)}
+                    project: attributes_for(:project)
             end 
 
             it { is_expected.to have_http_status(201).and have_content_type(:json) }
@@ -62,7 +62,7 @@ RSpec.describe API::ProjectsController do
         context "with invalid attributes" do
             before do
                 make_request :post, :create,
-                    {project: attributes_for(:invalid_project)} 
+                    project: attributes_for(:invalid_project) 
             end
 
             it { is_expected.to have_http_status(422).and have_content_type(:json) }
@@ -71,8 +71,8 @@ RSpec.describe API::ProjectsController do
         context "when requested a wrong content" do
            before do
               @count = Project.count 
-              make_request :post, :create, Mime::XML,
-                        {project: attributes_for(:project)}
+              make_request :post, :create,
+                            project: attributes_for(:project), accept: Mime::XML
            end
 
            it { is_expected.to have_http_status(406).and have_content_type(:json) }
@@ -98,7 +98,7 @@ RSpec.describe API::ProjectsController do
                     # generating another random name can be confusing,
                     # since we're going to check whether the original  
                     # name has been changed
-                    {id: proj, project: {name: 'edited_name'}} 
+                    id: proj, project: {name: 'edited_name'} 
             end
 
             it { is_expected.to have_http_status(:ok).and have_content_type(:json) }
@@ -110,7 +110,7 @@ RSpec.describe API::ProjectsController do
         context "with invalid attributes" do
             before do
                 make_request :patch, :update,
-                    {id: proj, project: attributes_for(:invalid_project)}
+                    id: proj, project: attributes_for(:invalid_project)
             end 
 
             it { is_expected.to have_http_status(422).and have_content_type(:json) }
@@ -118,8 +118,8 @@ RSpec.describe API::ProjectsController do
 
         context "when requested a wrong content" do
             before do
-                make_request :patch, :update, Mime::XML,
-                    {id: proj, project: {name: 'another_name'}}
+                make_request :patch, :update, id: proj,
+                              project: {name: 'another_name'}, accept: Mime::XML
             end
 
             it { is_expected.to have_http_status(406).and have_content_type(:json) }
@@ -135,7 +135,7 @@ RSpec.describe API::ProjectsController do
 
         context "with valid id" do
 
-            before { make_request :delete, :destroy, {id: proj} }
+            before { make_request :delete, :destroy, id: proj }
 
             it { is_expected.to have_http_status(204) }
             it { expect(Project.exists? proj).to be_falsey }
@@ -143,14 +143,14 @@ RSpec.describe API::ProjectsController do
 
         context "when a resourse is not found" do
 
-            before { make_request :delete, :destroy, {id: proj.id + 1} }
+            before { make_request :delete, :destroy, id: proj.id + 1 }
 
             it { is_expected.to have_http_status(404).and have_content_type(:json) }
         end
 
         context "when requested a wrong content" do
 
-            before { make_request :delete, :destroy, Mime::XML, {id: proj} }
+            before { make_request :delete, :destroy, id: proj, accept: Mime::XML }
 
             it { is_expected.to have_http_status(406).and have_content_type(:json) }
             # this time the resource should not be deleted

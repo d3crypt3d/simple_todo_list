@@ -7,14 +7,14 @@ RSpec.describe API::CommentsController do
         subject { response }
 
         context 'commen case' do
-            before { make_request :get, :index, {task_id: task_comment_list} }
+            before { make_request :get, :index, task_id: task_comment_list }
 
             it { is_expected.to have_http_status(:ok).and have_content_type(:json) }
             it { expect(task_comment_list.comments).to match_array(Comment.first(2)) }
         end
 
         context 'when a wrong format is requested' do
-            before { make_request :get, :index, Mime::XML, {task_id: task_comment_list} }
+            before { make_request :get, :index, task_id: task_comment_list, accept: Mime::XML }
 
             it { is_expected.to have_http_status(406).and have_content_type(:json) }
         end
@@ -26,7 +26,7 @@ RSpec.describe API::CommentsController do
         subject { response }
 
         context 'common case' do
-            before { make_request :get, :show, {id: task_comment} }
+            before { make_request :get, :show, id: task_comment }
 
             it { is_expected.to have_http_status(:ok).and have_content_type(:json) }
         end
@@ -38,7 +38,7 @@ RSpec.describe API::CommentsController do
         end
         
         context 'when a wrong format is requested' do
-            before { make_request :get, :show, Mime::XML, {id: task_comment} } 
+            before { make_request :get, :show, id: task_comment, accept: Mime::XML } 
 
             it { is_expected.to have_http_status(406).and have_content_type(:json) }
         end
@@ -52,7 +52,7 @@ RSpec.describe API::CommentsController do
         context 'with valid attributes' do
             before do
                 make_request :post, :create, 
-                    {comment: attributes_for(:comment), task_id: comment_task}
+                    comment: attributes_for(:comment), task_id: comment_task
             end
 
             it {is_expected.to have_http_status(201).and have_content_type(:json) }
@@ -61,7 +61,7 @@ RSpec.describe API::CommentsController do
         context 'with invalid attributes' do
             before do
                 make_request :post, :create, 
-                        {comment: attributes_for(:invalid_comment), task_id: comment_task}
+                        comment: attributes_for(:invalid_comment), task_id: comment_task
             end
 
             it { is_expected.to have_http_status(422).and have_content_type(:json) }
@@ -70,8 +70,8 @@ RSpec.describe API::CommentsController do
         context 'when a wrong format is requested' do
             before do
                 @count = Comment.count
-                make_request :post, :create, Mime::XML, 
-                    {comment: attributes_for(:comment), task_id: comment_task}
+                make_request :post, :create, comment: attributes_for(:comment),
+                                 task_id: comment_task, accept: Mime::XML
             end
 
             it { is_expected.to have_http_status(406).and have_content_type(:json) }
@@ -85,7 +85,7 @@ RSpec.describe API::CommentsController do
         subject { response }
 
         context 'with a valid id' do
-            before { make_request :delete, :destroy, {id: task_comment} }
+            before { make_request :delete, :destroy, id: task_comment }
 
             it { is_expected.to have_http_status(204) }
             it { expect(Comment.exists? task_comment).to be_falsey }
@@ -98,7 +98,7 @@ RSpec.describe API::CommentsController do
         end
 
         context 'when a wrong format is requested' do
-            before { make_request :delete, :destroy, Mime::XML, {id: task_comment} }
+            before { make_request :delete, :destroy, id: task_comment, accept: Mime::XML }
 
             it { is_expected.to have_http_status(406).and have_content_type(:json) }
             it { expect(Comment.exists? task_comment).to be_truthy }
