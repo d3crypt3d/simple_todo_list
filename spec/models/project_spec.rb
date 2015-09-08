@@ -1,19 +1,11 @@
 require 'rails_helper'
 
-describe Project do
+RSpec.describe Project do
+  # the default subject is already set  
+  it { is_expected.to respond_to(:name) }
+  it { is_expected.to validate_presence_of(:name).with_message('can\'t be blank') }
 
-  before do
-    @project = FactoryGirl.build(:project) 
+  context 'with valid attributes' do
+    it { expect(build(:project)).to be_valid }  
   end
-
-  subject { @project }
-
-  it { should be_valid }            #valid with valid attributes
-  it { should respond_to(:name) }
-
-  context "when name is not present" do
-    before { @project.name = " "}
-    it { should_not be_valid }
-  end  
-  #pending "add some examples to (or delete) #{__FILE__}"
 end

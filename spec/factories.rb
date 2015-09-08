@@ -1,4 +1,7 @@
-FactoryGirl.define do
+FactoryGirl.define do  factory :fake do
+    
+  end
+
     factory :project do
         name { FFaker::Lorem.word }
 

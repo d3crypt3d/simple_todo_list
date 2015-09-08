@@ -1,17 +1,11 @@
 require 'rails_helper'
 
-describe Comment do
-    before do
-        @comment = FactoryGirl.create(:comment)
-    end
+RSpec.describe Comment do
 
-    subject { @comment }
-
-    it { should be_valid }      #valid with valid attributes
-    it { should respond_to(:content) }
-
-    context "when content is not present" do
-        before { @comment.content = " " }
-        it { should_not be_valid }
-    end
+  it { is_expected.to respond_to(:content) }
+  it { is_expected.to validate_presence_of(:content).with_message('can\'t be blank') }
+ 
+  context 'with valid attributes' do
+    it { expect(build(:comment)).to be_valid }  
+  end
 end

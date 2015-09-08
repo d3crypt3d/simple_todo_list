@@ -52,8 +52,8 @@ RSpec.describe API::ProjectsController do
 
         context "with valid attributes" do
             before do
-                make_request :post, :create,
-                    project: attributes_for(:project)
+               make_request :post, :create,
+                   project: attributes_for(:project)
             end 
 
             it { is_expected.to have_http_status(201).and have_content_type(:json) }

@@ -1,38 +1,24 @@
 require 'rails_helper'
 
-describe Attachment do
+RSpec.describe Attachment do
+
+    let(:valid_attachment) { build(:attachment_valid_size) }
+    let(:invalid_attachment) { build(:attachment_invalid_size) }
     
-    before do
-        @attachment = FactoryGirl.create(:attachment)
-    end
+    it { is_expected.to respond_to(:filename) }
+    it { is_expected.to respond_to(:mime_type) }
+    it { is_expected.to respond_to(:data) }
+    it { is_expected.to respond_to(:file_upload=) }
 
-    subject { @attachment }
-
-    it { should be_valid }          # valid with valid attributes
-    it { should respond_to(:filename) }
-    it { should respond_to(:mime_type) }
-    it { should respond_to(:data) }
-    it { should respond_to(:file_upload=) }
-
-    context "it should be valid with a valid file size" do
-        before do
-             @attachment.file_upload= create_dummy_file(5242880)        # 5*2^20
-        end
-
-        it { expect(@attachment.valid?(:file_upload=)).to be true }
-        it { expect(@attachment.data).not_to be_nil }
+    context "with a valid file size" do
+        it { expect(valid_attachment.valid?(:file_upload=)).to be_truthy }
 
         after { delete_dummy_file }
     end
 
-    context "it should not be valid with invalid file size" do
-        before do
-            @attachment.file_upload= create_dummy_file(5242881) 
-        end
+    context 'with an invalid file size' do
+        it { expect(invalid_attachment.valid?(:file_upload=)).to be_falsey }
 
-        it { expect(@attachment.valid?(:file_upload=)).to be false }
-        it { expect(@attachment.data).to be_nil }
-        
         after { delete_dummy_file }
     end
 end

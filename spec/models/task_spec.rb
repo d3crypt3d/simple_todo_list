@@ -1,70 +1,29 @@
 require 'rails_helper'
 
-describe Task do
-  
-  before do
-      @task = FactoryGirl.build(:task)
-  end
+RSpec.describe Task do
 
-  subject { @task }
+  let(:valid_task) { create(:task) }  
 
-  it { should be_valid }                # valid with valid attributes
-  it { should respond_to(:content) }
-  it { should respond_to(:priority) }
-  it { should respond_to(:deadline) }
-  it { should respond_to(:isdone) }
-  it { should respond_to(:project_id) }
+  it { is_expected.to respond_to(:content) }
+  it { is_expected.to respond_to(:priority) }
+  it { is_expected.to respond_to(:deadline) }
+  it { is_expected.to respond_to(:isdone) }
+  it { is_expected.to respond_to(:project_id) }
+  it { is_expected.to validate_presence_of(:content).with_message('can\'t be blank') }
+  it { is_expected.to validate_presence_of(:priority).with_message('can\'t be blank') }
+  it { is_expected.to validate_presence_of(:deadline).with_message('can\'t be blank') }
+  it { is_expected.to validate_presence_of(:project_id).with_message('can\'t be blank') }
+  it { is_expected.to validate_numericality_of(:priority).only_integer }
+  it { is_expected.to validate_numericality_of(:priority).is_greater_than(0) }
+  it { is_expected.to validate_uniqueness_of(:priority) }
     
-  context "when content is not present" do
-      before { @task.content = " " }
-      it { should_not be_valid }
+  context 'with valid attributes' do
+    it { expect(build(:task)).to be_valid }  
   end
 
-  context "when priority is not present" do
-      before { @task.priority = nil }
-      it { should_not be_valid }
-  end
+  context "with the same priority exists inside another project" do
+    before { valid_task.project_id += 1 }
 
-  context "when priority is not numerical" do
-      before { @task.priority = 'not integer' }
-      it { should_not be_valid }
+    it { expect(valid_task).to be_valid }
   end
-
-  context "when priority is eq to 0" do
-      before { @task.priority = 0 }
-      it { should_not be_valid }
-  end
-
-  context "when priority is less than 0" do
-      before { @task.priority = -1 }
-      it { should_not be_valid }
-  end
-
-  context "when a task with the same priority 
-                is already exist inside this project" do
-      before { @task.save }             #since we used Factory's build method
-      subject { @task.dup }
-      it { should_not be_valid }
-  end
-
-  context "when a task with the same priority 
-                    exists inside another project" do
-       before do
-           @task.project_id += 1
-           @task.save
-       end 
-
-       it { should be_valid }
-  end
-
-  context "when deadline is not present" do
-      before { @task.deadline = nil }
-      it { should_not be_valid }
-  end
-
-  context "when project_id is not present" do
-      before { @task.project_id = nil }
-      it { should_not be_valid }
-  end
-  #pending "add some examples to (or delete) #{__FILE__}"
 end

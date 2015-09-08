@@ -3,6 +3,7 @@ ENV["RAILS_ENV"] ||= 'test'
 require 'spec_helper'
 require File.expand_path("../../config/environment", __FILE__)
 require 'rspec/rails'
+require 'shoulda/matchers'
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
@@ -19,9 +20,9 @@ ActiveRecord::Migration.maintain_test_schema!
 
 RSpec.configure do |config|
 
-    config.before do
+    config.before type: :controller do
         #host! "api.simple-todo-list.net"
-        Rails.application.routes.default_url_options[:host] = "api.simple-todo-list.net"
+        request.remote_addr = "api.simple-todo-list.net"
     end
 
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
