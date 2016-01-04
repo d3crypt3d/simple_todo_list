@@ -11,8 +11,7 @@ RSpec.describe API::ProjectsController do
            before { make_request :get, :index }  
 
            it { is_expected.to have_http_status(:ok).and have_content_type(:json) } 
-           # strange, following doesn't work if project_list and
-           # Project.first(2) are swapped
+           # following doesn't work if project_list and Project.first(2) are swapped
            it { expect(project_list).to match_array(Project.first(2)) }
         end 
 
@@ -52,8 +51,8 @@ RSpec.describe API::ProjectsController do
 
         context "with valid attributes" do
             before do
-               make_request :post, :create,
-                   project: attributes_for(:project)
+              make_request :post, :create,
+                  project: attributes_for(:project)
             end 
 
             it { is_expected.to have_http_status(201).and have_content_type(:json) }
@@ -80,13 +79,13 @@ RSpec.describe API::ProjectsController do
            # in the DB; the only way to do that is checking the count; 
            # expect { make_request }.not_to change(Project, :count) will be
            # an ugly contruct, since we also need to verify response params,
-           # hence we need make_request been performed only once 
+           # hence we need make_request to be performed once only
            it { expect(Project.count).to eq(@count) }
         end
     end
 
     describe "PATCH #update" do
-        # let's symbol generates the resource once be called
+        # once be called let's symbol generates the resource 
         # (as many, as many times we call it during transactional fixture)
         let(:proj) { create(:project) }
 

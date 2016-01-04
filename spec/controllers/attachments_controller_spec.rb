@@ -56,8 +56,7 @@ RSpec.describe API::AttachmentsController do
         context 'with valid attributes' do
             before do
                make_request :post, :create, comment_id: attach.comment_id, 
-                                    attachment: {data: create_dummy_file(524288)},
-                                     content: 'multipart/form-data'  
+                                    attachment: {data: create_dummy_file(524288)}
             end
 
             it { is_expected.to have_http_status(201).and have_content_type(:json) }
@@ -66,8 +65,7 @@ RSpec.describe API::AttachmentsController do
         context 'with invalid size' do
             before do
                 make_request :post, :create, comment_id: attach.comment_id, 
-                                     attachment: {data: create_dummy_file(5242881)},
-                                      content: 'multipart/form-data'  
+                                     attachment: {data: create_dummy_file(5242881)}
             end
 
             it { is_expected.to have_http_status(422).and have_content_type(:json) }
@@ -78,8 +76,7 @@ RSpec.describe API::AttachmentsController do
                 @count = Attachment.count
                 make_request :post, :create, comment_id: attach.comment_id, 
                                      attachment: {data: create_dummy_file(5242881)},
-                                      accept: Mime::XML,
-                                       content: 'multipart/form-data'
+                                      accept: Mime::XML
             end
 
             it { is_expected.to have_http_status(406).and have_content_type(:json) }

@@ -15,7 +15,7 @@ RSpec.describe Task do
   it { is_expected.to validate_presence_of(:project_id).with_message('can\'t be blank') }
   it { is_expected.to validate_numericality_of(:priority).only_integer }
   it { is_expected.to validate_numericality_of(:priority).is_greater_than(0) }
-  it { is_expected.to validate_uniqueness_of(:priority) }
+  it { is_expected.to validate_uniqueness_of(:priority).scoped_to(:project_id) }
     
   context 'with valid attributes' do
     it { expect(build(:task)).to be_valid }  
