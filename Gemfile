@@ -42,6 +42,8 @@ group :test, :development do
       gem 'ffaker'
 end
 
+gem 'database_cleaner',   group: :test
+
 gem 'active_model_serializers'
 
 # Use ActiveModel has_secure_password
