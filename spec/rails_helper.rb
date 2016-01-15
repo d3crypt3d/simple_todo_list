@@ -21,8 +21,8 @@ ActiveRecord::Migration.maintain_test_schema!
 RSpec.configure do |config|
 
   config.before type: :controller do
-     #host! "api.simple-todo-list.net"
-     request.remote_addr = "api.simple-todo-list.net"
+    #host! "api.simple-todo-list.net"
+    request.remote_addr = "api.simple-todo-list.net"
   end
 
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
@@ -51,5 +51,5 @@ RSpec.configure do |config|
   config.include ControllerHelpers
   # while factories load dummy files into the attachment resource
   # we still need an ability to create the file separately
-  config.include FactoryHelpers
+  config.include FactoryGirl::Syntax::Methods
 end

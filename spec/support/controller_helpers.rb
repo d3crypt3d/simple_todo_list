@@ -24,3 +24,4 @@ module ControllerHelpers
     self.send(method, action, data)
   end
 end
+
