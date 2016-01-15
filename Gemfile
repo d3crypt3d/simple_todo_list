@@ -1,6 +1,5 @@
 source 'https://rubygems.org'
 
-
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.1.1'
 
@@ -28,6 +27,8 @@ gem 'spring',        group: :development
 
 gem 'shoulda-matchers', group: :test, require: false
 
+gem 'jsonapi-serializers'
+
 group :test, :development do
       gem 'rspec-expectations', '~> 3.0.0'
       gem 'spring-commands-rspec'
@@ -42,9 +43,7 @@ group :test, :development do
       gem 'ffaker'
 end
 
-gem 'database_cleaner',   group: :test
-
-gem 'active_model_serializers'
+#gem 'database_cleaner',   group: :test
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'

@@ -8,6 +8,8 @@ Bundler.require(*Rails.groups)
 
 module SimpleToDoList
   class Application < Rails::Application
+    #require Rails.root.join("lib/custom_public_exceptions")
+
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
@@ -19,5 +21,10 @@ module SimpleToDoList
     # The default locale is :en and all translations from config/locales/*.rb,yml are auto loaded.
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     # config.i18n.default_locale = :de
+    
+    #config.exceptions_app = CustomPublicExceptions.new(Rails.public_path)
+      #lambda do |env|
+      #[404, { "Content-Type" => "text/plain" }, ["YOU FAILED"]]
+    #end
   end
 end

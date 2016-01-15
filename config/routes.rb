@@ -1,20 +1,23 @@
+require 'api_constraints'
+
 Rails.application.routes.draw do
- 
   namespace :api, path: '/', constraints: { subdomain: 'api' } do  
+    scope module: :v1, constraints: ApiConstraints.new('v1') do
       with_options except: [:new, :edit], shallow: true do |without_views|
-          without_views.resources :projects do
-             without_views.resources :tasks do
-                # just adding a new value to the same option will cause the clobbing: 
-                # the second value will override the first one when calling Hash#merge;
-                # the only way is setting the old value in a pair with the new one
-                without_views.with_options except: [:new, :edit, :update] do |without_update|
-                    without_update.resources :comments do
-                        without_update.resources :attachments
-                    end
-                end
-             end
-          end  
+        without_views.resources :projects do
+          without_views.resources :tasks do
+            # just adding a new value to the same option will cause the clobbing: 
+            # the second value will override the first one when calling Hash#merge;
+            # the only way is setting the old value in a pair with the new one
+            without_views.with_options except: [:new, :edit, :update] do |without_update|
+              without_update.resources :comments do
+                without_update.resources :attachments
+              end
+            end
+          end
+        end  
       end
+    end
   end
 
   # The priority is based upon order of creation: first created -> highest priority.

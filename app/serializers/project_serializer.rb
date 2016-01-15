@@ -1,4 +1,13 @@
-class ProjectSerializer < ActiveModel::Serializer
-  attributes :id, :name, :created_at, :updated_at
-  #has_many :tasks
+class ProjectSerializer < BaseSerializer
+  Project.attribute_names.each { |attr| attribute attr.to_sym }
+
+  has_many :tasks
+
+  #def links
+  #  {
+  #    self: '//foo',
+  #    related: '//bar'
+  #  }
+  #end
+  #link :self, '//foo'
 end

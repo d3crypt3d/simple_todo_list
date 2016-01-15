@@ -1,4 +1,5 @@
 module API
+  module V1
     class CommentsController < ApplicationController
       before_action :set_comment, except: [:index, :create]
       before_action :find_task, only: [:index, :create]
@@ -11,12 +12,12 @@ module API
       # GET /comments
       # GET /comments.json
       def index
-        respond_with @task.comments
+        respond_with serialize_models(@task.comments)
       end
 
       # GET /comments/new
       def show
-        respond_with @comment
+        respond_with serialize_model(@comment)
       end
 
       # POST /comments
@@ -25,7 +26,7 @@ module API
         comment = @task.comments.new(comment_params)
 
         if comment.save
-          respond_with comment, location: [:api, comment] 
+          respond_with serialize_model(comment), location: [:api, comment] 
         else
           render json: comment.errors, status: :unprocessable_entity 
         end
@@ -55,7 +56,8 @@ module API
 
         # Never trust parameters from the scary internet, only allow the white list through.
         def comment_params
-          params.require(:comment).permit(:id, :content)
+          params.require(:data).permit(:type, :id, {attributes: :content}).fetch(:attributes)
         end
     end
+  end
 end

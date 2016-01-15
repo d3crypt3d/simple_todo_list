@@ -1,4 +1,5 @@
 module API
+  module V1
     class AttachmentsController < ApplicationController
       before_action :set_attachment, except: [:index, :create]
       before_action :find_comment, only: [:index, :create]
@@ -8,23 +9,23 @@ module API
       # GET /attachments
       # GET /attachments.json
       def index
-        respond_with @comment.attachments
+        respond_with serialize_models(@comment.attachments)
       end
 
       # GET /attachments/1
       # GET /attachments/1.json
       def show
-          # Bug in Rails 4.1 - can't properly load  binary data while 
-          # pg 0.18 is been used, using base64 encding/decoding as a workaround
-          send_data(Base64.decode64(@attachment.data),
-                   type: @attachment.mime_type,
-                   filename: @attachment.filename)
+        # Bug in Rails 4.1 - can't properly load  binary data while 
+        # pg 0.18 is been used, using base64 encding/decoding as a workaround
+        send_data(Base64.decode64(@attachment.data),
+                  type: @attachment.mime_type,
+                  filename: @attachment.filename)
       end
 
       # POST /attachments
       # POST /attachments.json
       def create
-        # Since 4.1 Rails dont't properly process ActionDispatch::Http::UploadedFile
+        # Since 4.1 Rails doesn't properly process ActionDispatch::Http::UploadedFile
         # object it's better to do this manually: create the model instance and
         # define the custom method
         attachment = Attachment.new
@@ -56,11 +57,12 @@ module API
         end
 
         def find_comment
-            @comment = Comment.find(params[:comment_id])
+          @comment = Comment.find(params[:comment_id])
         end
         # Never trust parameters from the scary internet, only allow the white list through.
         def attachment_params
-          params.require(:attachment).permit(:id, :data)
+          params.require(:data).permit(:type, :id, {attributes: :data}).fetch(:attributes)
         end
     end
+  end
 end
