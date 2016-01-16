@@ -20,7 +20,7 @@ module API
       # POST /projects
       # POST /projects.json
       def create
-        project = Project.new(project_params)
+        project = Project.new(resource_params)
 
         if project.save
           # refer to rake routes for location options                 
@@ -33,7 +33,7 @@ module API
       # PATCH/PUT /projects/1
       # PATCH/PUT /projects/1.json
       def update
-        if @project.update(project_params)
+        if @project.update(resource_params)
           # without json: property has been set no content will be generated
           respond_with @project, json: serialize_model(@project), location: [:api, @project]
         else
@@ -60,8 +60,8 @@ module API
         end
 
         # Never trust parameters from the scary internet, only allow the white list through.
-        def project_params
-          params.require(:data).permit(:type, :id, {attributes: :name}).fetch(:attributes)
+        def resource_params
+          super :name
         end
     end
   end

@@ -24,7 +24,7 @@ module API
       # POST /tasks
       # POST /tasks.json
       def create
-        task = @project.tasks.new(task_params)
+        task = @project.tasks.new(resource_params)
 
         if task.save
           respond_with serialize_model(task), location: [:api, task]                 
@@ -36,7 +36,7 @@ module API
       # PATCH/PUT /tasks/1
       # PATCH/PUT /tasks/1.json
       def update
-        if @task.update(task_params)
+        if @task.update(resource_params)
           # without json: property has been set no content will be generated
           respond_with @task, json: serialize_model(@task), location: [:api, @task] 
         else
@@ -67,8 +67,8 @@ module API
         end
 
         # Never trust parameters from the scary internet, only allow the white list through.
-        def task_params
-          params.require(:data).permit(:type, :id, {attributes: [:content, :priority, :deadline, :isdone]}).fetch(:attributes)
+        def resource_params
+          super :content, :priority, :deadline, :isdone
         end
     end
   end

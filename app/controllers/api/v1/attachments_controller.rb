@@ -29,7 +29,7 @@ module API
         # object it's better to do this manually: create the model instance and
         # define the custom method
         attachment = Attachment.new
-        attachment.file_upload=(attachment_params.delete(:data))
+        attachment.file_upload=(resource_params.delete(:data))
         # custom validation will also rise native validations  
         if attachment.save(context: :file_upload=)
           respond_with :created, location: [:api, attachment] 
@@ -60,8 +60,8 @@ module API
           @comment = Comment.find(params[:comment_id])
         end
         # Never trust parameters from the scary internet, only allow the white list through.
-        def attachment_params
-          params.require(:data).permit(:type, :id, {attributes: :data}).fetch(:attributes)
+        def resource_params
+          super :data
         end
     end
   end

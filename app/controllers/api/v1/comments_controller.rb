@@ -23,7 +23,7 @@ module API
       # POST /comments
       # POST /comments.json
       def create
-        comment = @task.comments.new(comment_params)
+        comment = @task.comments.new(resource_params)
 
         if comment.save
           respond_with serialize_model(comment), location: [:api, comment] 
@@ -55,8 +55,8 @@ module API
         end
 
         # Never trust parameters from the scary internet, only allow the white list through.
-        def comment_params
-          params.require(:data).permit(:type, :id, {attributes: :content}).fetch(:attributes)
+        def resource_params
+          super :content
         end
     end
   end

@@ -32,4 +32,11 @@ class ApplicationController < ActionController::Base
     options[:is_collection] = true
     JSONAPI::Serializer.serialize(models, options)
   end
+
+  private
+  # DRY - move the construction into superclass, because attributes
+  # is the only thing that varies
+  def resource_params(*attributes)
+    params.require(:data).permit(:type, :id, {attributes: attributes}).fetch(:attributes)
+  end
 end
