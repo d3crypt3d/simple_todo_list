@@ -44,10 +44,6 @@ module API
         def set_comment
           id = params[:id]  
           @comment = Comment.find(id)
-        
-          rescue ActiveRecord::RecordNotFound
-                render json: {errors: "Couldn't find the Comment with id=#{id}"},
-                              status: :not_found
         end
 
         def find_task

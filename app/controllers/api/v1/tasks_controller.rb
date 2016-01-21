@@ -56,10 +56,6 @@ module API
         def set_task
           id = params[:id] 
           @task = Task.find(id)
-
-          rescue ActiveRecord::RecordNotFound
-                render json: {errors: "Couldn't find the Task with id=#{id}"},
-                              status: :not_found
         end
 
         def find_project

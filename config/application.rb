@@ -8,7 +8,7 @@ Bundler.require(*Rails.groups)
 
 module SimpleToDoList
   class Application < Rails::Application
-    #require Rails.root.join("lib/custom_public_exceptions")
+    require Rails.root.join("lib/exceptions_decorator")
 
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
@@ -22,9 +22,6 @@ module SimpleToDoList
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     # config.i18n.default_locale = :de
     
-    #config.exceptions_app = CustomPublicExceptions.new(Rails.public_path)
-      #lambda do |env|
-      #[404, { "Content-Type" => "text/plain" }, ["YOU FAILED"]]
-    #end
+    config.exceptions_app = ExceptionsDecorator.new(Rails.public_path)
   end
 end

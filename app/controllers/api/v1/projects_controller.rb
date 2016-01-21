@@ -53,12 +53,7 @@ module API
         def set_project
           id = params[:id]
           @project = Project.find(id)
-
-          rescue ActiveRecord::RecordNotFound
-              render json: {errors: "Couldn't find the Project with id=#{id}"},
-                            status: :not_found
         end
-
         # Never trust parameters from the scary internet, only allow the white list through.
         def resource_params
           super :name

@@ -3,14 +3,6 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
 
-  #rescue_from StandardError do |exception|
-  #  byebug
-  #end
-  rescue_from ActionController::UnknownFormat, with: :unacceptable
-
-  def unacceptable
-    render json: {errors: "Unsupported format is requested"}, status: :not_acceptable 
-  end
   # Using respond_to in pair with respond_with has a caveat:
   # since some of the operations (create/update/delete) are 
   # performed prior the respond_with method, one having requested

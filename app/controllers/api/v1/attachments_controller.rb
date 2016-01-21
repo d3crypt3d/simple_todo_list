@@ -50,10 +50,6 @@ module API
         def set_attachment
           id = params[:id]  
           @attachment = Attachment.find(id)
-        
-          rescue ActiveRecord::RecordNotFound
-                render json: {errors: "Couldn't find the Attachment with id=#{id}"},
-                              status: :not_found
         end
 
         def find_comment
