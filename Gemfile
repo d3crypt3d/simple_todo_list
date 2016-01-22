@@ -29,6 +29,8 @@ gem 'shoulda-matchers', group: :test, require: false
 
 gem 'jsonapi-serializers'
 
+gem 'devise'
+
 group :test, :development do
       gem 'rspec-expectations', '~> 3.0.0'
       gem 'spring-commands-rspec'
