@@ -1,6 +1,6 @@
 module API
   module V1
-    class CommentsController < ApplicationController
+    class CommentsController < API::V1::BaseController
       before_action :set_comment, except: [:index, :create]
       before_action :find_task, only: [:index, :create]
       # following hook will prevent an action from been called if having been moved

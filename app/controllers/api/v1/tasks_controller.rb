@@ -1,6 +1,6 @@
 module API
   module V1
-    class TasksController < ApplicationController
+    class TasksController < API::V1::BaseController
       before_action :set_task, except: [:index, :create]
       before_action :find_project, only: [:index, :create]
       # following hook will prevent an action from been called if having been moved

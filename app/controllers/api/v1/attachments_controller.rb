@@ -1,6 +1,6 @@
 module API
   module V1
-    class AttachmentsController < ApplicationController
+    class AttachmentsController < API::V1::BaseController
       before_action :set_attachment, except: [:index, :create]
       before_action :find_comment, only: [:index, :create]
       before_action :manually_validate_format, except: :index
