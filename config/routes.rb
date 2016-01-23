@@ -1,6 +1,7 @@
 require 'api_constraints'
 
 Rails.application.routes.draw do
+  devise_for :users
   namespace :api, path: '/', constraints: { subdomain: 'api' } do  
     scope module: :v1, constraints: ApiConstraints.new('v1') do
       with_options except: [:new, :edit], shallow: true do |without_views|

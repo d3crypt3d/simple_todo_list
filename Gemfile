@@ -30,25 +30,27 @@ gem 'shoulda-matchers', group: :test, require: false
 gem 'jsonapi-serializers'
 
 gem 'devise'
+gem 'omniauth'
+gem 'omniauth-facebook'
 
 group :test, :development do
-      gem 'rspec-expectations', '~> 3.0.0'
-      gem 'spring-commands-rspec'
-      #gem 'guard-rspec', require: false
-      gem 'rspec-rails', '~> 3.0.0'
-      # Support for its syntax
-      gem 'rspec-its', '~> 1.0.1'
-      # Support for stubbing model in view specs
-      gem 'rspec-activemodel-mocks', '~> 1.0.1'
-      gem 'capybara', '~> 2.3.0'
-      gem 'factory_girl_rails'
-      gem 'ffaker'
+  gem 'rspec-expectations', '~> 3.0.0'
+  gem 'spring-commands-rspec'
+  #gem 'guard-rspec', require: false
+  gem 'rspec-rails', '~> 3.0.0'
+  # Support for its syntax
+  gem 'rspec-its', '~> 1.0.1'
+  # Support for stubbing model in view specs
+  gem 'rspec-activemodel-mocks', '~> 1.0.1'
+  gem 'capybara', '~> 2.3.0'
+  gem 'factory_girl_rails'
+  gem 'ffaker'
 end
 
 #gem 'database_cleaner',   group: :test
 
 # Use ActiveModel has_secure_password
-# gem 'bcrypt', '~> 3.1.7'
+gem 'bcrypt', '~> 3.1.7'
 
 # Use unicorn as the app server
 # gem 'unicorn'
