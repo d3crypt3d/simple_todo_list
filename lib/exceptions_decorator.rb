@@ -27,7 +27,7 @@ class ExceptionsDecorator < ActionDispatch::PublicExceptions
                       # into the one, 'known' by the controller
                       # (not JSON only)
                        when ActionController::UnknownFormat
-                         content_type = controller_known_mimes.keys.first
+                         content_type = Mime::Type.lookup_by_extension(controller_known_mimes.keys.first)
                          # Unfortunately, error object of this
                          # type doesn't containt any description
                          'unsupported format is requested'
