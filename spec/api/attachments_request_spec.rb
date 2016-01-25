@@ -7,15 +7,15 @@ RSpec.describe API::V1::AttachmentsController do
     subject { response }
 
     context 'common case' do
-      before { make_request :get, :index, comment_id: attach.comment_id }
+      before { get api_comment_attachments_path(attach.comment_id), {}, {Accept: Mime::JSON} }
 
       it { is_expected.to have_http_status(:ok).and have_content_type(:json) }
-      it { expect(attach).to eql(Attachment.last) }
+      it { expect(attach.id).to eq(parse_for_id(response).first) }
     end
 
     context 'when a wrong format is requested' do
-      before { make_request :get, :index, comment_id: attach.comment_id, accept: Mime::XML }
-
+      before { get api_comment_attachments_path(attach.comment_id), {}, {Accept: Mime::XML} }
+ 
       it { is_expected.to have_http_status(406).and have_content_type(:json) }
     end
 
@@ -28,20 +28,20 @@ RSpec.describe API::V1::AttachmentsController do
     subject { response }
 
     context 'common case' do
-      before { make_request :get, :show, id: attach }
+      before { get api_attachment_path(attach.id), {}, {Accept: Mime::JSON} }
 
       it { is_expected.to have_http_status(:ok).and have_content_type(:png) }
     end
 
     context 'when a resource is not found' do
-      before { make_request :get, :show, id: attach.id + 1 }
+      before { get api_attachment_path(attach.id + 1), {}, {Accept: Mime::JSON} }
 
       it { is_expected.to have_http_status(404).and have_content_type(:json) }
     end
 
     context 'when a wrong format is requested' do
-      before { make_request :get, :show, id: attach, accept: Mime::XML}
-
+      before { get api_attachment_path(attach.id), {}, {Accept: Mime::XML} }
+ 
       it { is_expected.to have_http_status(406).and have_content_type(:json) }
     end
 
@@ -55,8 +55,7 @@ RSpec.describe API::V1::AttachmentsController do
 
     context 'with valid attributes' do
       before do
-        make_request :post, :create, comment_id: attach.comment_id, 
-                     data: json_api(:attachment_upload_valid)
+        post api_comment_attachments_path(attach.comment_id), {data: json_api(:attachment_upload_valid)}, {Accept: Mime::JSON}
       end
 
       it { is_expected.to have_http_status(201).and have_content_type(:json) }
@@ -64,8 +63,7 @@ RSpec.describe API::V1::AttachmentsController do
 
     context 'with invalid size' do
       before do
-        make_request :post, :create, comment_id: attach.comment_id, 
-                     data: json_api(:attachment_upload_invalid)
+        post api_comment_attachments_path(attach.comment_id), {data: json_api(:attachment_upload_invalid)}, {Accept: Mime::JSON}
       end
 
       it { is_expected.to have_http_status(422).and have_content_type(:json) }
@@ -74,9 +72,7 @@ RSpec.describe API::V1::AttachmentsController do
     context 'when a wrong format is requested' do
       before do
         @count = Attachment.count
-        make_request :post, :create, comment_id: attach.comment_id, 
-                     data: json_api(:attachment_upload_valid),
-                     accept: Mime::XML
+        post api_comment_attachments_path(attach.comment_id), {data: json_api(:attachment_upload_valid)}, {Accept: Mime::XML}
       end
 
       it { is_expected.to have_http_status(406).and have_content_type(:json) }
@@ -92,21 +88,21 @@ RSpec.describe API::V1::AttachmentsController do
     subject { response }
 
     context 'with a valid id' do
-      before { make_request :delete, :destroy, id: attach }
+      before { delete api_attachment_path(attach.id), {}, {Accept: Mime::JSON} }
 
       it { is_expected.to have_http_status(204) }
       it { expect(Attachment.exists? attach).to be_falsey }
     end
 
     context 'when a resourse is not found' do
-      before { make_request :delete, :destroy, id: attach.id + 1 }
-
+      before { delete api_attachment_path(attach.id + 1), {}, {Accept: Mime::JSON} }
+ 
       it { is_expected.to have_http_status(404).and have_content_type(:json) }
     end
 
     context 'when a wrong format is requested' do
-      before { make_request :delete, :destroy, id: attach, accept: Mime::XML }
-
+      before { delete api_attachment_path(attach.id), {}, {Accept: Mime::XML} }
+ 
       it { is_expected.to have_http_status(406).and have_content_type(:json) }
       it { expect(Attachment.exists? attach).to be_truthy }
     end

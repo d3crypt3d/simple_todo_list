@@ -7,16 +7,17 @@ RSpec.describe API::V1::TasksController do
     subject { response }
 
     context 'common case' do
-      before { make_request :get, :index, project_id: project_task_list.id }
+      before do
+        get api_project_tasks_path(project_task_list.id), {}, {Accept: Mime::JSON} 
+      end
 
       it { is_expected.to have_http_status(:ok).and have_content_type(:json) }
-      it { expect(project_task_list.tasks).to match_array(Task.first(2)) }
+      it { expect(project_task_list.tasks.map(&:id)).to eq(parse_for_id(response)) }
     end
 
     context 'when a wrong format is requested' do
       before do
-        make_request :get, :index,
-          project_id: project_task_list.id, accept: Mime::XML 
+        get api_project_tasks_path(project_task_list.id), {}, {Accept: Mime::XML} 
       end
 
       it { is_expected.to have_http_status(406).and have_content_type(:json) }
@@ -29,19 +30,19 @@ RSpec.describe API::V1::TasksController do
     subject { response }
 
     context 'common case' do
-      before { make_request :get, :show, id: project_task.id }
+      before { get api_task_path(project_task.id), {}, {Accept: Mime::JSON} }
 
       it { is_expected.to have_http_status(:ok).and have_content_type(:json) }
     end
 
     context 'when a resource is not found' do
-      before { make_request :get, :show, {id: project_task.id + 1} }
+      before { get api_task_path(project_task.id + 1), {}, {Accept: Mime::JSON} }
       
       it { is_expected.to have_http_status(404).and have_content_type(:json) }
     end
 
     context 'when a wrong format is requested' do
-      before { make_request :get, :show, id: project_task.id, accept: Mime::XML } 
+      before { get api_task_path(project_task.id), {}, {Accept: Mime::XML} } 
 
       it { is_expected.to have_http_status(406).and have_content_type(:json) }
     end
@@ -54,7 +55,7 @@ RSpec.describe API::V1::TasksController do
 
     context 'with valid attributes' do
       before do
-        make_request :post, :create, project_id: proj.id, data: json_api(:task)
+        post api_project_tasks_path(proj.id), {data: json_api(:task)}, {Accept: Mime::JSON} 
       end
       
       it {is_expected.to have_http_status(201).and have_content_type(:json) }
@@ -62,7 +63,7 @@ RSpec.describe API::V1::TasksController do
 
     context 'with invalid attributes' do
       before do
-        make_request :post, :create, project_id: proj.id, data: json_api(:invalid_task)
+        post api_project_tasks_path(proj.id), {data: json_api(:invalid_task)}, {Accept: Mime::JSON} 
       end
 
       it { is_expected.to have_http_status(422).and have_content_type(:json) }
@@ -71,8 +72,7 @@ RSpec.describe API::V1::TasksController do
     context 'when a wrong format is requested' do
       before do
         @count = Task.count
-        make_request :post, :create, project_id: proj.id, 
-                     data: json_api(:task), accept: Mime::XML
+        post api_project_tasks_path(proj.id), {data: json_api(:task)}, {Accept: Mime::XML} 
       end
 
       it { is_expected.to have_http_status(406).and have_content_type(:json) }
@@ -87,8 +87,7 @@ RSpec.describe API::V1::TasksController do
 
     context 'with valid attributes' do
       before do
-        make_request :patch, :update, id: project_task.id,
-                      data: json_api(:task, content: 'updated')
+        patch api_task_path(project_task.id), {data: json_api(:task, content: 'updated')}, {Accept: Mime::JSON}
       end
 
       it { is_expected.to have_http_status(:ok).and have_content_type(:json) }
@@ -98,7 +97,8 @@ RSpec.describe API::V1::TasksController do
 
     context 'with invalid attributes' do
       before do
-        make_request :patch, :update, id: project_task, data: json_api(:invalid_task)
+        patch api_task_path(project_task.id), {data: json_api(:invalid_task)}, {Accept: Mime::JSON}
+ 
       end
 
       it { is_expected.to have_http_status(422).and have_content_type(:json) }
@@ -106,8 +106,7 @@ RSpec.describe API::V1::TasksController do
     
     context 'when a wrong format is requested' do
       before do
-        make_request :patch, :update, id: project_task.id,
-                 data: json_api(:task, content: 'dont_update_me'), accept: Mime::XML
+        patch api_task_path(project_task.id), {data: json_api(:invalid_task, content: 'dont_update_me')}, {Accept: Mime::XML}
       end
 
       it { is_expected.to have_http_status(406).and have_content_type(:json) }
@@ -121,20 +120,20 @@ RSpec.describe API::V1::TasksController do
     subject { response }
 
     context 'with a valid id' do
-      before { make_request :delete, :destroy, id: project_task }
+      before { delete api_task_path(project_task.id), {}, {Accept: Mime::JSON} }
 
       it { is_expected.to have_http_status(204) }
       it { expect(Task.exists? project_task).to be_falsey }
     end
 
     context 'when a resourse is not found' do
-      before { make_request :delete, :destroy, id: project_task.id + 1 }
+      before { delete api_task_path(project_task.id + 1), {}, {Accept: Mime::JSON} }
 
       it { is_expected.to have_http_status(404).and have_content_type(:json) }
     end
 
     context 'when a wrong format is requested' do
-      before { make_request :delete, :destroy, id: project_task.id, accept: Mime::XML }
+      before { delete api_task_path(project_task.id), {}, {Accept: Mime::XML} }
 
       it { is_expected.to have_http_status(406).and have_content_type(:json) }
       it { expect(Task.exists? project_task).to be_truthy }

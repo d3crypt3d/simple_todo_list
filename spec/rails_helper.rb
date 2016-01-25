@@ -20,9 +20,8 @@ ActiveRecord::Migration.maintain_test_schema!
 
 RSpec.configure do |config|
 
-  config.before type: :controller do
-    #host! "api.simple-todo-list.net"
-    request.remote_addr = "api.simple-todo-list.net"
+  config.before type: :request do
+    host! 'api.simple-todo-list.net'
   end
 
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
@@ -47,8 +46,8 @@ RSpec.configure do |config|
   # The different available types are documented in the features, such as in
   # https://relishapp.com/rspec/rspec-rails/docs
   config.infer_spec_type_from_file_location!
-  config.include Helpers
-  config.include ControllerHelpers
+  config.include Helpers 
+  config.include Rails.application.routes.url_helpers, type: :request 
   # while factories load dummy files into the attachment resource
   # we still need an ability to create the file separately
   config.include FactoryGirl::Syntax::Methods
