@@ -54,6 +54,9 @@ GEM
       responders
       thread_safe (~> 0.1)
       warden (~> 1.2.3)
+    devise_token_auth (0.1.30)
+      devise (~> 3.3)
+      rails (~> 4.1)
     diff-lcs (1.2.5)
     erubis (2.7.0)
     execjs (2.5.2)
@@ -219,6 +222,7 @@ DEPENDENCIES
   capybara (~> 2.3.0)
   coffee-rails (~> 4.0.0)
   devise
+  devise_token_auth
   factory_girl_rails
   ffaker
   jbuilder (~> 2.0)

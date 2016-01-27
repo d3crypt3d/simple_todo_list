@@ -1,4 +1,5 @@
 class API::V1::BaseController < ApplicationController
+  include DeviseTokenAuth::Concerns::SetUserByToken
   # APIs on HTTP are stateless, sessions are exatly the
   # opposite of that, hence we must disable the CSRF
   # token and cookies

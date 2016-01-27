@@ -30,6 +30,7 @@ gem 'shoulda-matchers', group: :test, require: false
 gem 'jsonapi-serializers'
 
 gem 'devise'
+gem 'devise_token_auth'
 gem 'omniauth'
 gem 'omniauth-facebook'
 

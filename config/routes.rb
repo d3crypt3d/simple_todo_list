@@ -1,9 +1,10 @@
 require 'api_constraints'
 
 Rails.application.routes.draw do
-  devise_for :users
+  #devise_for :users
   namespace :api, path: '/', constraints: { subdomain: 'api' } do  
     scope module: :v1, constraints: ApiConstraints.new('v1') do
+      mount_devise_token_auth_for 'User', at: 'auth'
       with_options except: [:new, :edit], shallow: true do |without_views|
         without_views.resources :projects do
           without_views.resources :tasks do
