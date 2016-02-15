@@ -30,9 +30,12 @@ gem 'shoulda-matchers', group: :test, require: false
 gem 'jsonapi-serializers'
 
 gem 'devise'
-gem 'devise_token_auth'
+gem 'devise_token_auth', '~> 0.1.37'
 gem 'omniauth'
 gem 'omniauth-facebook'
+gem 'omniauth-twitter'
+gem 'omniauth-github'
+gem 'omniauth-google-oauth2'
 
 group :test, :development do
   gem 'rspec-expectations', '~> 3.0.0'
