@@ -1,7 +1,9 @@
 source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '4.1.1'
+gem 'rails', '4.2.5'
+
+gem 'responders', '~> 2.0'
 
 gem 'pg'
 # Use SCSS for stylesheets
@@ -23,7 +25,6 @@ gem 'jbuilder', '~> 2.0'
 gem 'sdoc', '~> 0.4.0',          group: :doc
 
 # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
-gem 'spring',        group: :development
 
 gem 'shoulda-matchers', group: :test, require: false
 
@@ -37,6 +38,11 @@ gem 'omniauth-twitter'
 gem 'omniauth-github'
 gem 'omniauth-google-oauth2'
 
+group :development do
+  gem 'spring'
+  gem 'web-console', '~> 2.0'
+end
+  
 group :test, :development do
   gem 'rspec-expectations', '~> 3.0.0'
   gem 'spring-commands-rspec'
