@@ -17,7 +17,7 @@ module API
       def show
         # Bug in Rails 4.1 - can't properly load  binary data while 
         # pg 0.18 is been used, using base64 encding/decoding as a workaround
-        send_data(Base64.decode64(@attachment.data),
+        send_data(@attachment.data,
                   type: @attachment.mime_type,
                   filename: @attachment.filename)
       end

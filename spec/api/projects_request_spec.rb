@@ -125,7 +125,6 @@ RSpec.describe API::V1::ProjectsController do
       before { make_request :delete, api_project_path(proj.id) }
 
       it { is_expected.to have_http_status(204) }
-      #it { expect(Project.exists? proj.id).to be_falsey }
       it { refute Project.find_by(id: proj.id) }
     end
 

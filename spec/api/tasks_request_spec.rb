@@ -1,14 +1,16 @@
 require 'rails_helper'
 
 RSpec.describe API::V1::TasksController do
-  describe 'GET #index' do
-    let(:project_task_list) { create(:project_with_tasks) }
-    
-    subject { response }
+  let(:proj) { create(:project) }
+  let(:project_task) { create(:task) }
+  let(:project_task_list) { create(:project_with_tasks) }
 
+  subject { response }
+
+  describe 'GET #index' do
     context 'common case' do
       before do
-        get api_project_tasks_path(project_task_list.id), {}, {Accept: Mime::JSON} 
+        make_request :get, api_project_tasks_path(project_task_list.id)
       end
 
       it { is_expected.to have_http_status(:ok).and have_content_type(:json) }
@@ -17,7 +19,7 @@ RSpec.describe API::V1::TasksController do
 
     context 'when a wrong format is requested' do
       before do
-        get api_project_tasks_path(project_task_list.id), {}, {Accept: Mime::XML} 
+        make_request :get, api_project_tasks_path(project_task_list.id), mime_accept: Mime::XML 
       end
 
       it { is_expected.to have_http_status(406).and have_content_type(:json) }
@@ -25,46 +27,37 @@ RSpec.describe API::V1::TasksController do
   end
 
   describe 'GET #show' do
-    let(:project_task) { create(:task) }
-
-    subject { response }
-
     context 'common case' do
-      before { get api_task_path(project_task.id), {}, {Accept: Mime::JSON} }
+      before { make_request :get, api_task_path(project_task.id) }
 
       it { is_expected.to have_http_status(:ok).and have_content_type(:json) }
     end
 
     context 'when a resource is not found' do
-      before { get api_task_path(project_task.id + 1), {}, {Accept: Mime::JSON} }
+      before { make_request :get, api_task_path(project_task.id + 1) }
       
       it { is_expected.to have_http_status(404).and have_content_type(:json) }
     end
 
     context 'when a wrong format is requested' do
-      before { get api_task_path(project_task.id), {}, {Accept: Mime::XML} } 
+      before { make_request :get, api_task_path(project_task.id), mime_accept: Mime::XML }
 
       it { is_expected.to have_http_status(406).and have_content_type(:json) }
     end
   end
       
   describe 'POST #create' do
-    let(:proj) { create(:project) }
-
-    subject { response }
-
     context 'with valid attributes' do
       before do
-        post api_project_tasks_path(proj.id), {data: json_api(:task)}, {Accept: Mime::JSON} 
+        make_request :post, api_project_tasks_path(proj.id), {'data'=> json_api(:task)} 
       end
       
-      it {is_expected.to have_http_status(201).and have_content_type(:json) }
+      it { is_expected.to have_http_status(201).and have_content_type(:json) }
     end
 
     context 'with invalid attributes' do
       before do
-        post api_project_tasks_path(proj.id), {data: json_api(:invalid_task)}, {Accept: Mime::JSON} 
-      end
+        make_request :post, api_project_tasks_path(proj.id), {'data'=> json_api(:invalid_task)} end
 
       it { is_expected.to have_http_status(422).and have_content_type(:json) }
     end
@@ -72,7 +65,7 @@ RSpec.describe API::V1::TasksController do
     context 'when a wrong format is requested' do
       before do
         @count = Task.count
-        post api_project_tasks_path(proj.id), {data: json_api(:task)}, {Accept: Mime::XML} 
+        make_request :post, api_project_tasks_path(proj.id), {'data'=> json_api(:task)}, mime_accept: Mime::XML 
       end
 
       it { is_expected.to have_http_status(406).and have_content_type(:json) }
@@ -81,24 +74,18 @@ RSpec.describe API::V1::TasksController do
   end
 
   describe 'PATCH #update' do
-    let(:project_task) { create(:task) } 
-    
-    subject { response }
-
     context 'with valid attributes' do
       before do
-        patch api_task_path(project_task.id), {data: json_api(:task, content: 'updated')}, {Accept: Mime::JSON}
+        make_request :patch, api_task_path(project_task.id), {'data'=> json_api(:task, content: 'updated')}
       end
 
       it { is_expected.to have_http_status(:ok).and have_content_type(:json) }
-
       it { expect(assigns(:task).content).to eq('updated') }
     end
 
     context 'with invalid attributes' do
       before do
-        patch api_task_path(project_task.id), {data: json_api(:invalid_task)}, {Accept: Mime::JSON}
- 
+        make_request :patch, api_task_path(project_task.id), {'data'=> json_api(:invalid_task)} 
       end
 
       it { is_expected.to have_http_status(422).and have_content_type(:json) }
@@ -106,7 +93,7 @@ RSpec.describe API::V1::TasksController do
     
     context 'when a wrong format is requested' do
       before do
-        patch api_task_path(project_task.id), {data: json_api(:invalid_task, content: 'dont_update_me')}, {Accept: Mime::XML}
+        make_request :patch, api_task_path(project_task.id), {'data'=> json_api(:invalid_task, content: 'dont_update_me')}, mime_accept: Mime::XML 
       end
 
       it { is_expected.to have_http_status(406).and have_content_type(:json) }
@@ -115,28 +102,24 @@ RSpec.describe API::V1::TasksController do
   end
   
   describe 'DELETE #destroy' do
-    let(:project_task) { create(:task) }
-
-    subject { response }
-
     context 'with a valid id' do
-      before { delete api_task_path(project_task.id), {}, {Accept: Mime::JSON} }
+      before { make_request :delete, api_task_path(project_task.id) }
 
       it { is_expected.to have_http_status(204) }
-      it { expect(Task.exists? project_task).to be_falsey }
+      it { refute Task.find_by(id: project_task.id) }
     end
 
     context 'when a resourse is not found' do
-      before { delete api_task_path(project_task.id + 1), {}, {Accept: Mime::JSON} }
+      before { make_request :delete, api_task_path(project_task.id + 1) }
 
       it { is_expected.to have_http_status(404).and have_content_type(:json) }
     end
 
     context 'when a wrong format is requested' do
-      before { delete api_task_path(project_task.id), {}, {Accept: Mime::XML} }
+      before { make_request :delete, api_task_path(project_task.id), mime_accept: Mime::XML }
 
       it { is_expected.to have_http_status(406).and have_content_type(:json) }
-      it { expect(Task.exists? project_task).to be_truthy }
+      it { assert Task.find_by(id: project_task.id) }
     end
   end
 end
