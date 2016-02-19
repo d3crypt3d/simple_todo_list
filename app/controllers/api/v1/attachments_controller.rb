@@ -3,7 +3,7 @@ module API
     class AttachmentsController < API::V1::BaseController
       before_action :set_attachment, except: [:index, :create]
       before_action :find_comment, only: [:index, :create]
-      before_action :manually_validate_format, except: :index
+      #before_action :manually_validate_format, except: :index
       respond_to :json
 
       # GET /attachments

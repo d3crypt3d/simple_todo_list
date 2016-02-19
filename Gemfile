@@ -3,7 +3,7 @@ source 'https://rubygems.org'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.2.5'
 
-gem 'responders', '~> 2.0'
+gem 'responders', '~> 2.1.1'
 
 gem 'pg'
 # Use SCSS for stylesheets
@@ -26,8 +26,6 @@ gem 'sdoc', '~> 0.4.0',          group: :doc
 
 # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
 
-gem 'shoulda-matchers', group: :test, require: false
-
 gem 'jsonapi-serializers'
 
 gem 'devise'
@@ -44,6 +42,8 @@ group :development do
 end
   
 group :test, :development do
+  gem 'pry-byebug'
+  gem 'pry-rails'
   gem 'rspec-expectations', '~> 3.0.0'
   gem 'spring-commands-rspec'
   #gem 'guard-rspec', require: false
@@ -52,6 +52,10 @@ group :test, :development do
   gem 'rspec-its', '~> 1.0.1'
   # Support for stubbing model in view specs
   gem 'rspec-activemodel-mocks', '~> 1.0.1'
+  # Dozens of useful onliners for testing Rails functionality
+  gem 'shoulda-matchers', '~> 3.1.1'
+  # Support for testing callbacks in models
+  gem 'shoulda-callback-matchers'
   gem 'capybara', '~> 2.3.0'
   gem 'factory_girl_rails'
   gem 'ffaker'
@@ -74,4 +78,3 @@ gem 'bcrypt', '~> 3.1.7'
 gem "therubyracer"
 gem "less-rails" #Sprockets (what Rails 3.1 uses for its asset pipeline) supports LESS
 gem "twitter-bootstrap-rails"
-gem 'byebug'

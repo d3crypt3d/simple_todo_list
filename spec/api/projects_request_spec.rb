@@ -1,16 +1,16 @@
 require 'rails_helper'
 
 RSpec.describe API::V1::ProjectsController do
+  let(:proj) { create(:project) }
+  let(:project_list) { create_list(:project, 2) }
+
+  subject { response }
 
   describe "GET #index" do
-    let(:project_list) { create_list(:project, 2) }
-
-    subject { response }
-
     context "common case" do
       before do
         project_list
-        get api_projects_path, {}, {Accept: Mime::JSON} # format: :json doesn't set the 'Accept' header 
+        make_request :get, api_projects_path
       end 
 
       it { is_expected.to have_http_status(:ok).and have_content_type(:json) } 
@@ -21,30 +21,26 @@ RSpec.describe API::V1::ProjectsController do
     end 
 
     context "when requested a wrong content" do
-      before { get api_projects_path, {}, {Accept: Mime::XML} }
+      before { make_request :get, api_projects_path, mime_accept: Mime::XML }
       it { is_expected.to have_http_status(406).and have_content_type(:json) }
     end
   end
 
   describe "GET #show" do
-    let(:proj) { create(:project) }
-
-    subject { response }
-
     context "common case" do
-      before { get api_project_path(proj.id), {}, {Accept: Mime::JSON} } 
+      before { make_request :get, api_project_path(proj.id) } 
 
       it { is_expected.to have_http_status(:ok).and have_content_type(:json) }
     end
 
     context "when a resource is not found" do
-      before { get api_project_path(proj.id + 1), {}, {Accept: Mime::JSON} } 
+      before { make_request :get, api_project_path(proj.id + 1) } 
 
       it { is_expected.to have_http_status(404).and have_content_type(:json) } 
     end
 
     context "when requested a wrong content" do
-      before { get api_project_path(proj.id), {}, {Accept: Mime::XML} } 
+      before { make_request :get, api_project_path(proj.id), mime_accept: Mime::XML } 
 
       it { is_expected.to have_http_status(406).and have_content_type(:json) }
     end
@@ -52,13 +48,11 @@ RSpec.describe API::V1::ProjectsController do
 
   
   describe "POST #create" do
-    subject { response }
-
     context "with valid attributes" do
       before do
         # data parametrized key will result as a root node
         # as required in JSON API spec
-        post api_projects_path, {data: json_api(:project)}, {Accept: Mime::JSON}
+        make_request :post, api_projects_path, {'data'=> json_api(:project)}
       end 
 
       it { is_expected.to have_http_status(201).and have_content_type(:json) }
@@ -66,7 +60,7 @@ RSpec.describe API::V1::ProjectsController do
 
     context "with invalid attributes" do
       before do
-        post api_projects_path, {data: json_api(:invalid_project)}, {Accept: Mime::JSON}
+        make_request :post, api_projects_path, {'data'=> json_api(:invalid_project)}
       end
 
       it { is_expected.to have_http_status(422).and have_content_type(:json) }
@@ -75,7 +69,7 @@ RSpec.describe API::V1::ProjectsController do
     context "when requested a wrong content" do
       before do
         @count = Project.count 
-        post api_projects_path, {data: json_api(:project)}, {Accept: Mime::XML} 
+        make_request :post, api_projects_path, {'data'=> json_api(:project)}, mime_accept: Mime::XML
       end
 
       it { is_expected.to have_http_status(406).and have_content_type(:json) }
@@ -91,10 +85,6 @@ RSpec.describe API::V1::ProjectsController do
   describe "PATCH #update" do
     # once be called let's symbol generates the resource 
     # (as many, as many times we call it during transactional fixture)
-    let(:proj) { create(:project) }
-
-    subject { response }
-
     context "with valid attributes" do
       before do
         # generating another random name can be confusing,
@@ -103,7 +93,7 @@ RSpec.describe API::V1::ProjectsController do
         # id: is a mandatory parameter - it will result as
         # a route id (it will not be merged with JSON API
         # object - last is binded to data: key)  
-        patch api_project_path(proj.id), {data: json_api(:project, name: 'edited_name')}, {Accept: Mime::JSON} 
+        make_request :patch, api_project_path(proj.id), {'data'=> json_api(:project, name: 'edited_name')} 
       end
 
       it { is_expected.to have_http_status(:ok).and have_content_type(:json) }
@@ -113,7 +103,7 @@ RSpec.describe API::V1::ProjectsController do
 
     context "with invalid attributes" do
       before do
-        patch api_project_path(proj.id), {data: json_api(:invalid_project)}, {Accept: Mime::JSON}
+        make_request :patch, api_project_path(proj.id), {'data'=> json_api(:invalid_project)}
       end 
 
       it { is_expected.to have_http_status(422).and have_content_type(:json) }
@@ -121,7 +111,7 @@ RSpec.describe API::V1::ProjectsController do
 
     context "when requested a wrong content" do
       before do
-        patch api_project_path(proj.id), {data: json_api(:project, name: 'another_name')}, {Accept: Mime::XML}
+        make_request :patch, api_project_path(proj.id), {'data'=> json_api(:project, name: 'another_name')}, mime_accept: Mime::XML
       end
 
       it { is_expected.to have_http_status(406).and have_content_type(:json) }
@@ -130,33 +120,27 @@ RSpec.describe API::V1::ProjectsController do
     end
   end
 
-  describe "DELETE #destroy" do
-    let(:proj) { create(:project) }
-
-    subject { response }
-
+  describe "DELETE #destroy", debug: true do
     context "with valid id" do
-
-      before { delete api_project_path(proj.id), {}, {Accept: Mime::JSON} }
+      before { make_request :delete, api_project_path(proj.id) }
 
       it { is_expected.to have_http_status(204) }
-      it { expect(Project.exists? proj).to be_falsey }
+      #it { expect(Project.exists? proj.id).to be_falsey }
+      it { refute Project.find_by(id: proj.id) }
     end
 
     context "when a resourse is not found" do
-
-      before { delete api_project_path(proj.id + 1), {}, {Accept: Mime::JSON} }
+      before { make_request :delete, api_project_path(proj.id + 1) }
 
       it { is_expected.to have_http_status(404).and have_content_type(:json) }
     end
 
     context "when requested a wrong content" do
-
-      before { delete api_project_path(proj.id), {}, {Accept: Mime::XML} }
+      before { make_request :delete, api_project_path(proj.id), mime_accept: Mime::XML }
 
       it { is_expected.to have_http_status(406).and have_content_type(:json) }
       # this time the resource should not be deleted
-      it { expect(Project.exists? proj).to be_truthy }
+      it { assert Project.find_by(id: proj.id) }
     end
   end
 end

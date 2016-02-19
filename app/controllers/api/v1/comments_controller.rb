@@ -3,10 +3,7 @@ module API
     class CommentsController < API::V1::BaseController
       before_action :set_comment, except: [:index, :create]
       before_action :find_task, only: [:index, :create]
-      # following hook will prevent an action from been called if having been moved
-      # to application.rb (why?); hence assigns(:symbol) will throw an error when 
-      # wrong content is requested, because correspnding instance variable will not be set
-      before_action :manually_validate_format, only: [:create, :destroy]
+      #before_action :manually_validate_format, only: [:create, :destroy]
       respond_to :json
 
       # GET /comments

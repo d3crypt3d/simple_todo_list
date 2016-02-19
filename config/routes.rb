@@ -1,7 +1,6 @@
 require 'api_constraints'
 
 Rails.application.routes.draw do
-
   namespace :api, path: '/', constraints: { subdomain: 'api' } do  
     scope module: :v1, constraints: ApiConstraints.new('v1') do
       mount_devise_token_auth_for 'User', at: 'auth'
