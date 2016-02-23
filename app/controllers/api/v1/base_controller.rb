@@ -33,8 +33,8 @@ class API::V1::BaseController < ApplicationController
     request.session_options[:skip] = true
   end
 
-  # DRY - move the construction into superclass, because attributes
-  # is the only thing that varies
+  # DRY - move the construction into superclass, because 
+  # attributes are the only things that varies
   def resource_params(*attributes)
     params.require(:data).permit(:type, :id, {attributes: attributes}).fetch(:attributes)
   end

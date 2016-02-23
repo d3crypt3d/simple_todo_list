@@ -11,14 +11,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160127114814) do
+ActiveRecord::Schema.define(version: 20160220165214) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "attachments", force: true do |t|
-    t.string   "filename"
-    t.string   "mime_type"
+  create_table "attachments", force: :cascade do |t|
+    t.string   "filename",   limit: 255
+    t.string   "mime_type",  limit: 255
     t.binary   "data"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -27,8 +27,8 @@ ActiveRecord::Schema.define(version: 20160127114814) do
 
   add_index "attachments", ["comment_id"], name: "index_attachments_on_comment_id", using: :btree
 
-  create_table "comments", force: true do |t|
-    t.string   "content"
+  create_table "comments", force: :cascade do |t|
+    t.string   "content",    limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "task_id"
@@ -36,14 +36,14 @@ ActiveRecord::Schema.define(version: 20160127114814) do
 
   add_index "comments", ["task_id"], name: "index_comments_on_task_id", using: :btree
 
-  create_table "projects", force: true do |t|
-    t.string   "name"
+  create_table "projects", force: :cascade do |t|
+    t.string   "name",       limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "tasks", force: true do |t|
-    t.string   "content"
+  create_table "tasks", force: :cascade do |t|
+    t.string   "content",    limit: 255
     t.integer  "priority"
     t.datetime "deadline"
     t.boolean  "isdone"
@@ -54,29 +54,30 @@ ActiveRecord::Schema.define(version: 20160127114814) do
 
   add_index "tasks", ["project_id"], name: "index_tasks_on_project_id", using: :btree
 
-  create_table "users", force: true do |t|
-    t.string   "email",                  default: "", null: false
-    t.string   "encrypted_password",     default: "", null: false
-    t.string   "reset_password_token"
+  create_table "users", force: :cascade do |t|
+    t.string   "email",                  limit: 255, default: "",    null: false
+    t.string   "encrypted_password",     limit: 255, default: "",    null: false
+    t.string   "reset_password_token",   limit: 255
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
-    t.integer  "sign_in_count",          default: 0,  null: false
+    t.integer  "sign_in_count",                      default: 0,     null: false
     t.datetime "current_sign_in_at"
     t.datetime "last_sign_in_at"
     t.inet     "current_sign_in_ip"
     t.inet     "last_sign_in_ip"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "provider",                            null: false
-    t.string   "uid",                                 null: false
-    t.string   "confirmation_token"
+    t.string   "provider",               limit: 255,                 null: false
+    t.string   "uid",                    limit: 255,                 null: false
+    t.string   "confirmation_token",     limit: 255
     t.datetime "confirmed_at"
     t.datetime "confirmation_sent_at"
-    t.string   "unconfirmed_email"
-    t.string   "name"
-    t.string   "nickname"
-    t.string   "image"
+    t.string   "unconfirmed_email",      limit: 255
+    t.string   "name",                   limit: 255
+    t.string   "nickname",               limit: 255
+    t.string   "image",                  limit: 255
     t.text     "tokens"
+    t.boolean  "admin",                              default: false
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree

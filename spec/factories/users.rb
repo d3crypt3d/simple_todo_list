@@ -25,6 +25,10 @@ FactoryGirl.define do
       created_at { confirmed_at }
       updated_at { confirmed_at }
     end
+
+    trait :password_reset_token do
+      reset_password_token 'foo_bar_baz'
+    end
   end
 
   # To be used with the sreategy
