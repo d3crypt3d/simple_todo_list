@@ -1,9 +1,11 @@
 class API::V1::BaseController < ApplicationController
+  include CanCan::ControllerAdditions
   include DeviseTokenAuth::Concerns::SetUserByToken
   # APIs on HTTP are stateless, sessions are exactly the
   # opposite of that, hence we must disable the CSRF
   # token and cookies
   protect_from_forgery with: :null_session
+  before_action :verify_request_format!
   before_action :authenticate_api_user!
 
   # Using respond_to in pair with respond_with has a caveat:

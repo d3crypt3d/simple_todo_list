@@ -3,7 +3,7 @@ source 'https://rubygems.org'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.2.5'
 
-gem 'responders', '~> 2.1.1'
+gem 'responders', '~> 2.2.0'
 
 gem 'pg'
 # Use SCSS for stylesheets
@@ -30,6 +30,7 @@ gem 'jsonapi-serializers'
 
 gem 'devise'
 gem 'devise_token_auth', '~> 0.1.37'
+gem 'cancancan', '~> 1.10'
 gem 'omniauth'
 gem 'omniauth-facebook'
 gem 'omniauth-twitter'
